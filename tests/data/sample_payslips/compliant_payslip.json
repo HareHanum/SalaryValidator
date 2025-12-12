@@ -1,0 +1,29 @@
+{
+  "payslip_date": "2024-01-01",
+  "employee_name": "ישראל ישראלי",
+  "employee_id": "123456789",
+  "base_salary": 6500.00,
+  "hours_worked": 182,
+  "hourly_rate": 35.71,
+  "gross_salary": 6500.00,
+  "net_salary": 5200.00,
+  "overtime_hours": 0,
+  "overtime_pay": 0,
+  "weekend_hours": 0,
+  "weekend_pay": 0,
+  "vacation_days": 0,
+  "vacation_pay": 0,
+  "bonus": 0,
+  "deductions": {
+    "income_tax": 500.00,
+    "national_insurance": 200.00,
+    "health_insurance": 150.00,
+    "pension_employee": 390.00,
+    "pension_employer": 422.50
+  },
+  "expected_result": {
+    "is_compliant": true,
+    "violations": [],
+    "total_missing": 0
+  }
+}

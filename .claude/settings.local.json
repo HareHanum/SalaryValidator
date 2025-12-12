@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mkdir:*)",
+      "Bash(curl:*)",
+      "Bash(cat:*)",
+      "Bash(source venv/bin/activate)",
+      "Bash(uvicorn:*)",
+      "Bash(pip install:*)",
+      "Bash(python3:*)",
+      "Bash(rm:*)",
+      "Bash(./venv/bin/pip:*)",
+      "Bash(./venv/bin/salary-validator analyze:*)",
+      "Bash(./venv/bin/uvicorn:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

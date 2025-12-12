@@ -1,0 +1,2861 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SalaryValidator - בודק תלושי שכר</title>
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --background: #0f172a;
+            --surface: #1e293b;
+            --surface-light: #334155;
+            --text: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #475569;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Heebo', sans-serif;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--surface) 0%, var(--background) 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+
+        .logo-text h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo-text p {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        .lang-toggle {
+            background: var(--surface-light);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .lang-toggle:hover {
+            background: var(--primary);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 60px 0 40px;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, #fff 0%, var(--text-muted) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Upload Section */
+        .upload-section {
+            padding: 40px 0;
+        }
+
+        .upload-card {
+            background: var(--surface);
+            border: 2px dashed var(--border);
+            border-radius: 24px;
+            padding: 60px 40px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-card:hover {
+            border-color: var(--primary);
+            background: rgba(99, 102, 241, 0.05);
+        }
+
+        .upload-card.dragover {
+            border-color: var(--secondary);
+            background: rgba(16, 185, 129, 0.1);
+            transform: scale(1.02);
+        }
+
+        .upload-card.has-file {
+            border-color: var(--secondary);
+            border-style: solid;
+        }
+
+        .upload-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 24px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .upload-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 12px;
+        }
+
+        .upload-card p {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .upload-btn {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .upload-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 40px rgba(99, 102, 241, 0.3);
+        }
+
+        .upload-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .supported-formats {
+            margin-top: 24px;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .format-badge {
+            background: var(--surface-light);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+        }
+
+        /* Selected Files */
+        .selected-files-wrapper {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .selected-files-wrapper.show {
+            display: flex;
+        }
+
+        .selected-files {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .selected-file-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: rgba(16, 185, 129, 0.1);
+            border-radius: 10px;
+            border: 1px solid var(--secondary);
+        }
+
+        .selected-file-item .file-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .selected-file-item .file-icon {
+            font-size: 20px;
+        }
+
+        .selected-file-item .file-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .selected-file-item .file-size {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .selected-file-item .remove-file {
+            background: var(--danger);
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .selected-file-item .remove-file:hover {
+            transform: scale(1.1);
+        }
+
+        .files-summary {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            background: var(--surface-light);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+        }
+
+        .files-summary .count {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+
+        .files-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .analyze-btn {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .analyze-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .analyze-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .clear-btn {
+            background: var(--surface-light);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+        }
+
+        .clear-btn:hover {
+            background: var(--danger);
+            color: white;
+            border-color: var(--danger);
+        }
+
+        /* Loading State */
+        .loading {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .loading.show {
+            display: flex;
+        }
+
+        .spinner {
+            width: 60px;
+            height: 60px;
+            border: 4px solid var(--surface-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            margin-top: 20px;
+            color: var(--text-muted);
+        }
+
+        /* Results Section */
+        .results-section {
+            display: none;
+            padding: 40px 0 60px;
+        }
+
+        .results-section.show {
+            display: block;
+        }
+
+        .results-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .results-header h2 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        /* Summary Cards */
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        @media (max-width: 900px) {
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .summary-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            text-align: center;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .summary-card.compliant {
+            border-color: var(--secondary);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, var(--surface) 100%);
+        }
+
+        .summary-card.violation {
+            border-color: var(--danger);
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, var(--surface) 100%);
+        }
+
+        .summary-card .icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+
+        .summary-card .value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .summary-card .label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .summary-card.compliant .value {
+            color: var(--secondary);
+        }
+
+        .summary-card.violation .value {
+            color: var(--danger);
+        }
+
+        /* Compliance Status */
+        .compliance-status {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 32px;
+            margin-bottom: 40px;
+            border: 1px solid var(--border);
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 24px;
+        }
+
+        .status-badge {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 24px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .status-badge.compliant {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--secondary);
+        }
+
+        .status-badge.non-compliant {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .status-badge .status-icon {
+            font-size: 24px;
+        }
+
+        .risk-level {
+            text-align: left;
+        }
+
+        .risk-level .label {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 4px;
+        }
+
+        .risk-level .value {
+            font-weight: 600;
+            font-size: 1.125rem;
+        }
+
+        .risk-level .value.low { color: var(--secondary); }
+        .risk-level .value.medium { color: var(--warning); }
+        .risk-level .value.high { color: #f97316; }
+        .risk-level .value.critical { color: var(--danger); }
+
+        /* Progress Bar */
+        .compliance-bar {
+            margin-top: 20px;
+        }
+
+        .compliance-bar .bar-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 0.875rem;
+        }
+
+        .compliance-bar .bar-track {
+            height: 12px;
+            background: var(--surface-light);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .compliance-bar .bar-fill {
+            height: 100%;
+            border-radius: 6px;
+            transition: width 1s ease-out;
+            background: linear-gradient(90deg, var(--danger) 0%, var(--warning) 50%, var(--secondary) 100%);
+        }
+
+        /* Violations List */
+        .violations-section {
+            background: var(--surface);
+            border-radius: 20px;
+            padding: 32px;
+            border: 1px solid var(--border);
+        }
+
+        .violations-section h3 {
+            font-size: 1.25rem;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .violation-card {
+            background: var(--surface-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
+            border-right: 4px solid var(--danger);
+        }
+
+        .violation-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .violation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .violation-type {
+            font-weight: 600;
+            font-size: 1.125rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .violation-amount {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+
+        .violation-description {
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .violation-details {
+            display: flex;
+            gap: 24px;
+            font-size: 0.875rem;
+        }
+
+        .violation-details span {
+            color: var(--text-muted);
+        }
+
+        .violation-details strong {
+            color: var(--text);
+        }
+
+        /* No Violations */
+        .no-violations {
+            text-align: center;
+            padding: 40px;
+        }
+
+        .no-violations .icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .no-violations h4 {
+            font-size: 1.25rem;
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .no-violations p {
+            color: var(--text-muted);
+        }
+
+        /* File Results */
+        .file-results-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .file-results-section h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+        }
+
+        .file-result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--surface-light);
+            border-radius: 8px;
+            margin-bottom: 8px;
+        }
+
+        .file-result-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .file-result-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-result-status {
+            font-size: 1.2rem;
+        }
+
+        .file-result-name {
+            font-weight: 500;
+        }
+
+        .file-result-error {
+            color: var(--danger);
+            font-size: 0.85rem;
+        }
+
+        .file-result-success {
+            color: var(--secondary);
+            font-size: 0.85rem;
+        }
+
+        /* Methodology Section */
+        .methodology-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .methodology-section h3 {
+            margin-bottom: 16px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .methodology-content {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+        }
+
+        .checks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .check-item {
+            background: var(--surface-light);
+            padding: 16px;
+            border-radius: 12px;
+            border-right: 3px solid var(--primary);
+        }
+
+        .check-item h4 {
+            font-size: 0.95rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .check-item p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Payslip Details Section */
+        .payslip-details-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+        }
+
+        .payslip-details-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .payslip-card {
+            background: var(--surface-light);
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .payslip-card:last-child {
+            margin-bottom: 0;
+        }
+
+        .payslip-card-header {
+            padding: 16px 20px;
+            background: rgba(99, 102, 241, 0.1);
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .payslip-card-header:hover {
+            background: rgba(99, 102, 241, 0.15);
+        }
+
+        .payslip-card-title {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payslip-status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .payslip-status-badge.compliant {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--secondary);
+        }
+
+        .payslip-status-badge.violation {
+            background: rgba(239, 68, 68, 0.2);
+            color: var(--danger);
+        }
+
+        .payslip-card-body {
+            padding: 20px;
+            display: none;
+        }
+
+        .payslip-card-body.show {
+            display: block;
+        }
+
+        .data-section {
+            margin-bottom: 20px;
+        }
+
+        .data-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .data-section-title {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .data-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+        }
+
+        .data-item {
+            background: var(--surface);
+            padding: 12px;
+            border-radius: 8px;
+        }
+
+        .data-item .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .data-item .value {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        /* Check Results */
+        .check-results {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .check-result-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 16px;
+            background: var(--surface);
+            border-radius: 8px;
+            border-right: 3px solid transparent;
+        }
+
+        .check-result-item.passed {
+            border-right-color: var(--secondary);
+        }
+
+        .check-result-item.failed {
+            border-right-color: var(--danger);
+        }
+
+        .check-result-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .check-result-icon {
+            font-size: 1.2rem;
+        }
+
+        .check-result-name {
+            font-weight: 500;
+        }
+
+        .check-result-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        /* Expand icon */
+        .expand-icon {
+            transition: transform 0.3s;
+        }
+
+        .payslip-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-top: 40px;
+        }
+
+        .action-btn {
+            padding: 14px 28px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .action-btn.primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+        }
+
+        .action-btn.secondary {
+            background: transparent;
+            color: var(--text);
+            border: 2px solid var(--border);
+        }
+
+        .action-btn.download {
+            background: linear-gradient(135deg, var(--secondary) 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 18px 40px;
+            font-size: 1.15rem;
+            box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+
+        .action-btn.download:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 40px rgba(16, 185, 129, 0.5);
+        }
+
+        .action-btn.download:disabled {
+            animation: none;
+            opacity: 0.5;
+            box-shadow: none;
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% {
+                box-shadow: 0 8px 30px rgba(16, 185, 129, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(16, 185, 129, 0.6);
+            }
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Pricing Section */
+        .pricing-section {
+            padding: 40px 0;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+            margin: 40px 0;
+        }
+
+        .pricing-section h3 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        .pricing-section .subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 32px;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 350px;
+            }
+        }
+
+        .pricing-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 28px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .pricing-card.popular {
+            border-color: var(--secondary);
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.15) 0%, var(--surface) 100%);
+        }
+
+        .pricing-card.popular::before {
+            content: attr(data-popular-label);
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--secondary);
+            color: white;
+            padding: 4px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .pricing-card .docs {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 4px;
+        }
+
+        .pricing-card .docs-label {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 16px;
+        }
+
+        .pricing-card .price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .pricing-card .price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--text-muted);
+        }
+
+        .pricing-card .per-doc {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* Blur overlay for results */
+        .results-blur {
+            filter: blur(8px);
+            pointer-events: none;
+            user-select: none;
+        }
+
+        /* Payment Popup Overlay */
+        .payment-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.9);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+        }
+
+        .payment-overlay.show {
+            display: flex;
+        }
+
+        .payment-popup {
+            background: var(--surface);
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .payment-popup h2 {
+            font-size: 1.75rem;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .payment-popup .popup-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .payment-summary {
+            background: var(--surface-light);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 24px;
+            text-align: right;
+        }
+
+        .payment-summary .item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            color: var(--text-muted);
+        }
+
+        .payment-summary .item:last-child {
+            margin-bottom: 0;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+            color: var(--text);
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .payment-methods {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .payment-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            border: 2px solid transparent;
+        }
+
+        .payment-btn.paypal {
+            background: #0070ba;
+            color: white;
+        }
+
+        .payment-btn.paypal:hover {
+            background: #005ea6;
+        }
+
+        .payment-btn.googlepay {
+            background: white;
+            color: #3c4043;
+        }
+
+        .payment-btn.googlepay:hover {
+            background: #f1f3f4;
+        }
+
+        .payment-btn.creditcard {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+
+        .payment-btn.creditcard:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .payment-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .payment-btn .btn-icon {
+            font-size: 1.25rem;
+        }
+
+        .payment-processing {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .payment-processing.show {
+            display: flex;
+        }
+
+        .payment-processing .spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid var(--surface-light);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 16px;
+        }
+
+        .payment-success {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .payment-success.show {
+            display: flex;
+        }
+
+        .payment-success .success-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        @keyframes scaleIn {
+            0% { transform: scale(0); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .payment-success h3 {
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        .close-popup {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            background: var(--surface-light);
+            border: none;
+            color: var(--text-muted);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.25rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .close-popup:hover {
+            background: var(--danger);
+            color: white;
+        }
+
+        /* Features */
+        .features {
+            padding: 40px 0;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 500px) {
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-card {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .feature-card:hover {
+            border-color: var(--primary);
+            transform: translateY(-4px);
+        }
+
+        .feature-card .icon {
+            font-size: 32px;
+            margin-bottom: 16px;
+        }
+
+        .feature-card h4 {
+            font-size: 1.125rem;
+            margin-bottom: 8px;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        .features-title {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .features-subtitle {
+            text-align: center;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+            font-size: 1rem;
+        }
+
+        .features-grid-8 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .features-grid-8 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .features-grid-8 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-legal {
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border);
+        }
+
+        .feature-rate {
+            font-size: 0.8rem;
+            color: var(--secondary);
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .legal-disclaimer {
+            background: rgba(245, 158, 11, 0.1);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+
+        .legal-disclaimer h4 {
+            color: #f59e0b;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .legal-disclaimer p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            line-height: 1.6;
+        }
+
+        .privacy-card {
+            max-width: 400px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .hero h2 {
+                font-size: 1.75rem;
+            }
+
+            .upload-card {
+                padding: 40px 20px;
+            }
+
+            .status-header {
+                flex-direction: column;
+                gap: 16px;
+            }
+
+            .violation-header {
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .action-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">📋</div>
+                    <div class="logo-text">
+                        <h1>SalaryValidator</h1>
+                        <p data-i18n="logoSubtitle">בודק תלושי שכר</p>
+                    </div>
+                </div>
+                <button class="lang-toggle" onclick="toggleLanguage()" data-i18n="langToggle">EN / עב</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="container">
+                <h2 data-i18n="heroTitle">בדוק את תלוש השכר שלך</h2>
+                <p data-i18n="heroSubtitle">העלה את תלוש השכר שלך ונבדוק עבורך את העמידה בחוקי העבודה בישראל, כולל שכר מינימום, הפרשות פנסיה ועוד</p>
+            </div>
+        </section>
+
+        <section class="upload-section">
+            <div class="container">
+                <div class="upload-card" id="uploadCard">
+                    <div class="upload-icon">📄</div>
+                    <h3 data-i18n="uploadTitle">גרור ושחרר את תלוש השכר כאן</h3>
+                    <p data-i18n="uploadSubtitle">או לחץ לבחירת קובץ</p>
+                    <button class="upload-btn" id="uploadBtn" data-i18n="uploadBtn">בחר קבצים</button>
+                    <input type="file" class="file-input" id="fileInput" accept=".pdf,.png,.jpg,.jpeg,.tiff,.tif" multiple>
+                    <div class="supported-formats">
+                        <span class="format-badge">PDF</span>
+                        <span class="format-badge">PNG</span>
+                        <span class="format-badge">JPG</span>
+                        <span class="format-badge">TIFF</span>
+                        <span class="format-badge" style="background: var(--primary); color: white;" data-i18n="multipleFiles">מספר קבצים</span>
+                    </div>
+                    <div class="selected-files-wrapper" id="selectedFilesWrapper">
+                        <div class="selected-files" id="selectedFiles">
+                            <!-- Files will be listed here -->
+                        </div>
+                        <div class="files-summary" id="filesSummary">
+                            <span class="count" id="filesCount">📁 0 קבצים נבחרו</span>
+                            <div class="files-actions">
+                                <button class="clear-btn" onclick="clearFiles()" data-i18n="clearAll">🗑️ נקה הכל</button>
+                                <button class="analyze-btn" onclick="analyzeFiles()" data-i18n="analyzeAll">🔍 נתח הכל</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p data-i18n="analyzing">מנתח את תלוש השכר...</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="pricing-section">
+            <div class="container">
+                <h3 data-i18n="pricingTitle">תמחור פשוט ושקוף</h3>
+                <p class="subtitle" data-i18n="pricingSubtitle">שלם רק עבור מה שאתה צריך - ללא מנוי, ללא התחייבות</p>
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="docs">12</div>
+                        <div class="docs-label" data-i18n="payslips">תלושים</div>
+                        <div class="price">10 <span>NIS</span></div>
+                        <div class="per-doc">0.83 NIS <span data-i18n="perPayslip">לתלוש</span></div>
+                    </div>
+                    <div class="pricing-card popular" data-popular-label="הכי פופולרי">
+                        <div class="docs">24</div>
+                        <div class="docs-label" data-i18n="payslips">תלושים</div>
+                        <div class="price">14.90 <span>NIS</span></div>
+                        <div class="per-doc">0.62 NIS <span data-i18n="perPayslip">לתלוש</span></div>
+                    </div>
+                    <div class="pricing-card">
+                        <div class="docs">24+</div>
+                        <div class="docs-label" data-i18n="payslipsUnlimited">תלושים (ללא הגבלה)</div>
+                        <div class="price">24.90 <span>NIS</span></div>
+                        <div class="per-doc" data-i18n="bestPrice">המחיר הטוב ביותר</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="results-section" id="resultsSection">
+            <div class="container">
+                <div class="results-header">
+                    <h2 data-i18n="resultsTitle">תוצאות הניתוח</h2>
+                </div>
+
+                <div class="summary-grid" id="summaryGrid">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <div class="compliance-status" id="complianceStatus">
+                    <!-- Populated by JavaScript -->
+                </div>
+
+                <div class="methodology-section" id="methodologySection">
+                    <h3 data-i18n="methodologyTitle">📋 מתודולוגיית הבדיקה</h3>
+                    <div class="methodology-content" id="methodologyContent">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                    <div class="checks-grid" id="checksGrid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="payslip-details-section" id="payslipDetailsSection">
+                    <h3 data-i18n="payslipDetailsTitle">📄 פירוט תלושים</h3>
+                    <div id="payslipDetailsList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="violations-section" id="violationsSection">
+                    <h3 data-i18n="violationsTitle">⚠️ הפרות שנמצאו</h3>
+                    <div id="violationsList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="file-results-section" id="fileResultsSection" style="display: none;">
+                    <h3 data-i18n="fileResultsTitle">📁 סטטוס עיבוד קבצים</h3>
+                    <div id="fileResultsList">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="actions" style="flex-direction: column; align-items: center;">
+                    <button class="action-btn download" onclick="downloadReport()" data-i18n="downloadReport">
+                        📥 הורד דוח PDF מלא
+                    </button>
+                    <button class="action-btn secondary" onclick="analyzeAnother()" style="margin-top: 8px;" data-i18n="analyzeAnother">
+                        📄 נתח תלוש נוסף
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="container">
+                <h3 class="features-title" data-i18n="featuresTitle">מה אנחנו בודקים</h3>
+                <p class="features-subtitle" data-i18n="featuresSubtitle">8 בדיקות מקיפות על בסיס חוקי העבודה בישראל</p>
+                <div class="features-grid-8">
+                    <div class="feature-card">
+                        <div class="icon">💰</div>
+                        <h4 data-i18n="featureMinWage">שכר מינימום</h4>
+                        <p data-i18n="featureMinWageDesc">וידוא שהשכר השעתי עומד בדרישות חוק שכר מינימום</p>
+                        <div class="feature-legal" data-i18n="featureMinWageLegal">חוק שכר מינימום, התשמ"ז-1987</div>
+                        <div class="feature-rate" data-i18n="featureMinWageRate">₪34.32 לשעה (אפריל 2025)</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🏦</div>
+                        <h4 data-i18n="featurePension">הפרשות פנסיה</h4>
+                        <p data-i18n="featurePensionDesc">בדיקת הפרשות חובה: עובד 6%, מעסיק 6.5%</p>
+                        <div class="feature-legal" data-i18n="featurePensionLegal">צו הרחבה לביטוח פנסיוני מקיף, 2008</div>
+                        <div class="feature-rate" data-i18n="featurePensionRate">סה"כ 12.5% (לא כולל פיצויים)</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">⏰</div>
+                        <h4 data-i18n="featureOvertime">שעות נוספות</h4>
+                        <p data-i18n="featureOvertimeDesc">2 שעות ראשונות 125%, משעה 3 ומעלה 150%</p>
+                        <div class="feature-legal" data-i18n="featureOvertimeLegal">חוק שעות עבודה ומנוחה, התשי"א-1951</div>
+                        <div class="feature-rate" data-i18n="featureOvertimeRate">מקסימום 4 שעות נוספות ביום</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🔢</div>
+                        <h4 data-i18n="featureHoursRate">שעות × תעריף</h4>
+                        <p data-i18n="featureHoursRateDesc">וידוא שהשכר הבסיסי תואם לשעות כפול תעריף</p>
+                        <div class="feature-legal" data-i18n="featureHoursRateLegal">חוק הגנת השכר, התשי"ח-1958</div>
+                        <div class="feature-rate" data-i18n="featureHoursRateRate">סטייה מותרת: 1% או ₪1</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🛡️</div>
+                        <h4 data-i18n="featureNI">ביטוח לאומי</h4>
+                        <p data-i18n="featureNIDesc">בדיקת ניכוי ביטוח לאומי לפי מדרגות השכר</p>
+                        <div class="feature-legal" data-i18n="featureNILegal">חוק הביטוח הלאומי, התשנ"ה-1995</div>
+                        <div class="feature-rate" data-i18n="featureNIRate">0.4% עד ₪7,522 | 7% מעל</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🏥</div>
+                        <h4 data-i18n="featureHealthTax">מס בריאות</h4>
+                        <p data-i18n="featureHealthTaxDesc">בדיקת ניכוי מס בריאות לפי מדרגות השכר</p>
+                        <div class="feature-legal" data-i18n="featureHealthTaxLegal">חוק ביטוח בריאות ממלכתי, התשנ"ד-1994</div>
+                        <div class="feature-rate" data-i18n="featureHealthTaxRate">3.1% עד ₪7,522 | 5% מעל</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">💼</div>
+                        <h4 data-i18n="featureSeverance">קרן פיצויים</h4>
+                        <p data-i18n="featureSeveranceDesc">בדיקת הפרשת המעסיק לקרן פיצויים (סעיף 14)</p>
+                        <div class="feature-legal" data-i18n="featureSeveranceLegal">חוק פיצויי פיטורים, התשכ"ג-1963</div>
+                        <div class="feature-rate" data-i18n="featureSeveranceRate">8.33% מהשכר (1/12 חודשי)</div>
+                    </div>
+                    <div class="feature-card">
+                        <div class="icon">🔒</div>
+                        <h4 data-i18n="featurePrivacy">פרטיות מלאה</h4>
+                        <p data-i18n="featurePrivacyDesc">הנתונים שלך מעובדים באופן מאובטח ואינם נשמרים</p>
+                        <div class="feature-legal"></div>
+                        <div class="feature-rate"></div>
+                    </div>
+                </div>
+
+                <div class="legal-disclaimer">
+                    <h4 data-i18n="disclaimerTitle">⚠️ הגבלות וסייגים</h4>
+                    <p data-i18n="disclaimerText">המערכת בודקת רק אם הנתונים מופיעים בתלוש. היא אינה בודקת: מס הכנסה, דמי הבראה, חופשה שנתית, ימי מחלה, והוצאות נסיעה. התוצאות אינן מהוות ייעוץ משפטי. לבירור מלא יש לפנות לעו"ד דיני עבודה.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>SalaryValidator v0.1.0 | <span data-i18n="footerDesc">מערכת לניתוח תלושי שכר ובדיקת עמידה בחוקי העבודה בישראל</span></p>
+        </div>
+    </footer>
+
+    <!-- Payment Popup -->
+    <div class="payment-overlay" id="paymentOverlay">
+        <div class="payment-popup">
+            <button class="close-popup" onclick="closePaymentPopup()">&times;</button>
+
+            <div id="paymentContent">
+                <h2 data-i18n="paymentTitle">🔓 גישה לתוצאות הניתוח</h2>
+                <p class="popup-subtitle" data-i18n="paymentSubtitle">השלם את התשלום כדי לצפות בתוצאות המלאות</p>
+
+                <div class="payment-summary">
+                    <div class="item">
+                        <span data-i18n="docsCount">כמות תלושים</span>
+                        <span id="popupDocsCount">0</span>
+                    </div>
+                    <div class="item">
+                        <span data-i18n="package">חבילה</span>
+                        <span id="popupPackage">-</span>
+                    </div>
+                    <div class="item">
+                        <span data-i18n="totalPayment">סה"כ לתשלום</span>
+                        <span id="popupPrice">0 NIS</span>
+                    </div>
+                </div>
+
+                <div class="payment-methods" id="paymentMethods">
+                    <button class="payment-btn paypal" onclick="processPayment('PayPal')">
+                        <span class="btn-icon">🅿️</span>
+                        PayPal
+                    </button>
+                    <button class="payment-btn googlepay" onclick="processPayment('Google Pay')">
+                        <span class="btn-icon">🔵</span>
+                        Google Pay
+                    </button>
+                    <button class="payment-btn creditcard" onclick="processPayment('Credit Card')">
+                        <span class="btn-icon">💳</span>
+                        <span data-i18n="creditCard">כרטיס אשראי</span>
+                    </button>
+                </div>
+
+                <p style="font-size: 0.75rem; color: var(--text-muted);" data-i18n="paymentSecure">
+                    התשלום מאובטח ומוצפן. אנחנו לא שומרים את פרטי התשלום שלך.
+                </p>
+            </div>
+
+            <div class="payment-processing" id="paymentProcessing">
+                <div class="spinner"></div>
+                <p data-i18n="processingPayment">מעבד תשלום...</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted);" id="processingMethod"></p>
+            </div>
+
+            <div class="payment-success" id="paymentSuccess">
+                <div class="success-icon">✅</div>
+                <h3 data-i18n="paymentSuccess">התשלום בוצע בהצלחה!</h3>
+                <p style="color: var(--text-muted); margin-bottom: 20px;" data-i18n="paymentSuccessDesc">כעת תוכל לצפות בתוצאות הניתוח המלאות</p>
+                <button class="action-btn primary" onclick="unlockResults()" data-i18n="viewResults">
+                    🔓 צפה בתוצאות
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const uploadCard = document.getElementById('uploadCard');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const selectedFilesWrapper = document.getElementById('selectedFilesWrapper');
+        const selectedFiles = document.getElementById('selectedFiles');
+        const filesCount = document.getElementById('filesCount');
+        const loading = document.getElementById('loading');
+        const resultsSection = document.getElementById('resultsSection');
+
+        let currentFiles = [];
+        let lastResults = null;
+        let isPaid = false;
+        let currentLang = 'he';
+
+        // Translations
+        const translations = {
+            he: {
+                // Header
+                pageTitle: 'SalaryValidator - בודק תלושי שכר',
+                logoSubtitle: 'בודק תלושי שכר',
+                langToggle: 'EN / עב',
+
+                // Hero
+                heroTitle: 'בדוק את תלוש השכר שלך',
+                heroSubtitle: 'העלה את תלוש השכר שלך ונבדוק עבורך את העמידה בחוקי העבודה בישראל, כולל שכר מינימום, הפרשות פנסיה ועוד',
+
+                // Upload
+                uploadTitle: 'גרור ושחרר את תלוש השכר כאן',
+                uploadSubtitle: 'או לחץ לבחירת קובץ',
+                uploadBtn: 'בחר קבצים',
+                multipleFiles: 'מספר קבצים',
+                filesSelected: 'קבצים נבחרו',
+                fileSelected: 'קובץ',
+                analyzeAll: '🔍 נתח הכל',
+                clearAll: '🗑️ נקה הכל',
+                analyzing: 'מנתח את תלוש השכר...',
+                analyzingFiles: 'מנתח קובץ {current} מתוך {total}...',
+                analyzingPayslips: 'מנתח {count} תלושים...',
+
+                // Pricing
+                pricingTitle: 'תמחור פשוט ושקוף',
+                pricingSubtitle: 'שלם רק עבור מה שאתה צריך - ללא מנוי, ללא התחייבות',
+                payslips: 'תלושים',
+                payslipsUnlimited: 'תלושים (ללא הגבלה)',
+                perPayslip: 'לתלוש',
+                bestPrice: 'המחיר הטוב ביותר',
+                mostPopular: 'הכי פופולרי',
+                upTo12: 'עד 12 תלושים',
+                upTo24: 'עד 24 תלושים',
+                unlimited: '24+ תלושים (ללא הגבלה)',
+
+                // Results
+                resultsTitle: 'תוצאות הניתוח',
+                statusCompliant: 'תקין',
+                statusViolations: 'נמצאו הפרות',
+                overallStatus: 'סטטוס כללי',
+                missingAmount: 'סכום חסר',
+                checksPerformed: 'בדיקות בוצעו',
+                payslipsChecked: 'תלושים נבדקו',
+                complianceLabel: 'תאימות לחוק',
+                riskLevel: 'רמת סיכון',
+                riskLow: 'סיכון נמוך',
+                riskMedium: 'סיכון בינוני',
+                riskHigh: 'סיכון גבוה',
+                riskCritical: 'סיכון קריטי',
+                payslipCompliant: 'התלוש תקין',
+                payslipViolations: 'נמצאו הפרות בתלוש',
+
+                // Methodology
+                methodologyTitle: '📋 מתודולוגיית הבדיקה',
+                dataSource: 'מקור הנתונים:',
+                methodology: 'מתודולוגיה:',
+                totalChecks: 'סה"כ בדיקות:',
+                checksOnPayslips: 'בדיקות על פני {count} תלושים',
+                defaultDataSource: 'נתוני השכר חולצו מהתלוש באמצעות OCR ונותחו אוטומטית',
+                defaultMethodology: 'הניתוח מבוסס על חוקי העבודה בישראל, כולל חוק שכר מינימום וצו ההרחבה לפנסיה',
+                checkMinWage: 'בדיקת שכר מינימום',
+                checkMinWageDesc: 'וידוא שהשכר השעתי עומד בשכר המינימום לפי החוק',
+                checkHoursRate: 'חישוב שעות × תעריף',
+                checkHoursRateDesc: 'בדיקת התאמה בין שעות עבודה, תעריף ושכר בסיס',
+                checkPension: 'הפרשות פנסיה',
+                checkPensionDesc: 'בדיקת הפרשות חובה לפנסיה (6% עובד, 6.5% מעסיק)',
+
+                // Payslip Details
+                payslipDetailsTitle: '📄 פירוט תלושים',
+                compliant: '✓ תקין',
+                violation: '⚠️ נמצאו הפרות',
+                extractedData: '📊 נתונים שחולצו מהתלוש',
+                grossSalary: 'שכר ברוטו',
+                netSalary: 'שכר נטו',
+                hoursWorked: 'שעות עבודה',
+                hourlyRate: 'שכר שעתי',
+                pensionEmployee: 'הפרשת פנסיה עובד',
+                incomeTax: 'מס הכנסה',
+                legalRequirements: '⚖️ דרישות חוקיות',
+                minHourlyWage: 'שכר מינימום שעתי',
+                minMonthlyWage: 'שכר מינימום חודשי',
+                pensionRate: 'שיעור פנסיה עובד',
+                expectedPension: 'פנסיה נדרשת (עובד)',
+                checkResults: '🔍 תוצאות בדיקה',
+
+                // Violations
+                violationsTitle: '⚠️ הפרות שנמצאו',
+                noViolations: 'מעולה! לא נמצאו הפרות',
+                noViolationsDesc: 'כל התלושים עומדים בדרישות חוקי העבודה',
+                expected: 'צפוי:',
+                actual: 'בפועל:',
+                violationMinWage: 'שכר מינימום',
+                violationPension: 'הפרשות פנסיה',
+                violationCalc: 'שגיאת חישוב',
+                violationOvertime: 'שעות נוספות',
+
+                // File Results
+                fileResultsTitle: '📁 סטטוס עיבוד קבצים',
+                analyzedSuccess: 'נותח בהצלחה',
+                networkError: 'שגיאת רשת',
+                notAPayslip: 'המסמך אינו נראה כתלוש שכר. לא נמצאו שדות אופייניים לתלוש כגון: שכר ברוטו/נטו, מס הכנסה, ביטוח לאומי, או הפרשות פנסיה.',
+                ocrError: 'שגיאה בזיהוי הטקסט (OCR). ודא ששירות Google Cloud Vision API מופעל, או נסה להעלות קובץ באיכות טובה יותר.',
+
+                // Actions
+                downloadReport: '📥 הורד דוח PDF מלא',
+                analyzeAnother: '📄 נתח תלוש נוסף',
+                generatingPdf: '⏳ מייצר דוח PDF...',
+
+                // Payment Popup
+                paymentTitle: '🔓 גישה לתוצאות הניתוח',
+                paymentSubtitle: 'השלם את התשלום כדי לצפות בתוצאות המלאות',
+                docsCount: 'כמות תלושים',
+                package: 'חבילה',
+                totalPayment: 'סה"כ לתשלום',
+                creditCard: 'כרטיס אשראי',
+                paymentSecure: 'התשלום מאובטח ומוצפן. אנחנו לא שומרים את פרטי התשלום שלך.',
+                processingPayment: 'מעבד תשלום...',
+                paymentVia: 'באמצעות',
+                paymentSuccess: 'התשלום בוצע בהצלחה!',
+                paymentSuccessDesc: 'כעת תוכל לצפות בתוצאות הניתוח המלאות',
+                viewResults: '🔓 צפה בתוצאות',
+
+                // Features
+                featuresTitle: 'מה אנחנו בודקים',
+                featuresSubtitle: '8 בדיקות מקיפות על בסיס חוקי העבודה בישראל',
+                featureMinWage: 'שכר מינימום',
+                featureMinWageDesc: 'וידוא שהשכר השעתי עומד בדרישות חוק שכר מינימום',
+                featureMinWageLegal: 'חוק שכר מינימום, התשמ"ז-1987',
+                featureMinWageRate: '₪34.32 לשעה (אפריל 2025)',
+                featurePension: 'הפרשות פנסיה',
+                featurePensionDesc: 'בדיקת הפרשות חובה: עובד 6%, מעסיק 6.5%',
+                featurePensionLegal: 'צו הרחבה לביטוח פנסיוני מקיף, 2008',
+                featurePensionRate: 'סה"כ 12.5% (לא כולל פיצויים)',
+                featureOvertime: 'שעות נוספות',
+                featureOvertimeDesc: '2 שעות ראשונות 125%, משעה 3 ומעלה 150%',
+                featureOvertimeLegal: 'חוק שעות עבודה ומנוחה, התשי"א-1951',
+                featureOvertimeRate: 'מקסימום 4 שעות נוספות ביום',
+                featureHoursRate: 'שעות × תעריף',
+                featureHoursRateDesc: 'וידוא שהשכר הבסיסי תואם לשעות כפול תעריף',
+                featureHoursRateLegal: 'חוק הגנת השכר, התשי"ח-1958',
+                featureHoursRateRate: 'סטייה מותרת: 1% או ₪1',
+                featureNI: 'ביטוח לאומי',
+                featureNIDesc: 'בדיקת ניכוי ביטוח לאומי לפי מדרגות השכר',
+                featureNILegal: 'חוק הביטוח הלאומי, התשנ"ה-1995',
+                featureNIRate: '0.4% עד ₪7,522 | 7% מעל',
+                featureHealthTax: 'מס בריאות',
+                featureHealthTaxDesc: 'בדיקת ניכוי מס בריאות לפי מדרגות השכר',
+                featureHealthTaxLegal: 'חוק ביטוח בריאות ממלכתי, התשנ"ד-1994',
+                featureHealthTaxRate: '3.1% עד ₪7,522 | 5% מעל',
+                featureSeverance: 'קרן פיצויים',
+                featureSeveranceDesc: 'בדיקת הפרשת המעסיק לקרן פיצויים (סעיף 14)',
+                featureSeveranceLegal: 'חוק פיצויי פיטורים, התשכ"ג-1963',
+                featureSeveranceRate: '8.33% מהשכר (1/12 חודשי)',
+                featurePrivacy: 'פרטיות מלאה',
+                featurePrivacyDesc: 'הנתונים שלך מעובדים באופן מאובטח ואינם נשמרים',
+                disclaimerTitle: '⚠️ הגבלות וסייגים',
+                disclaimerText: 'המערכת בודקת רק אם הנתונים מופיעים בתלוש. היא אינה בודקת: מס הכנסה, דמי הבראה, חופשה שנתית, ימי מחלה, והוצאות נסיעה. התוצאות אינן מהוות ייעוץ משפטי. לבירור מלא יש לפנות לעו"ד דיני עבודה.',
+
+                // Footer
+                footerDesc: 'מערכת לניתוח תלושי שכר ובדיקת עמידה בחוקי העבודה בישראל',
+            },
+            en: {
+                // Header
+                pageTitle: 'SalaryValidator - Payslip Checker',
+                logoSubtitle: 'Payslip Checker',
+                langToggle: 'EN / עב',
+
+                // Hero
+                heroTitle: 'Check Your Payslip',
+                heroSubtitle: 'Upload your payslip and we\'ll verify compliance with Israeli labor laws, including minimum wage, pension contributions, and more',
+
+                // Upload
+                uploadTitle: 'Drag and drop your payslip here',
+                uploadSubtitle: 'or click to select files',
+                uploadBtn: 'Select Files',
+                multipleFiles: 'Multiple files',
+                filesSelected: 'files selected',
+                fileSelected: 'file',
+                analyzeAll: '🔍 Analyze All',
+                clearAll: '🗑️ Clear All',
+                analyzing: 'Analyzing payslip...',
+                analyzingFiles: 'Analyzing file {current} of {total}...',
+                analyzingPayslips: 'Analyzing {count} payslips...',
+
+                // Pricing
+                pricingTitle: 'Simple & Transparent Pricing',
+                pricingSubtitle: 'Pay only for what you need - no subscription, no commitment',
+                payslips: 'Payslips',
+                payslipsUnlimited: 'Payslips (Unlimited)',
+                perPayslip: 'per payslip',
+                bestPrice: 'Best value',
+                mostPopular: 'Most Popular',
+                upTo12: 'Up to 12 payslips',
+                upTo24: 'Up to 24 payslips',
+                unlimited: '24+ payslips (Unlimited)',
+
+                // Results
+                resultsTitle: 'Analysis Results',
+                statusCompliant: 'Compliant',
+                statusViolations: 'Violations Found',
+                overallStatus: 'Overall Status',
+                missingAmount: 'Missing Amount',
+                checksPerformed: 'Checks Performed',
+                payslipsChecked: 'Payslips Checked',
+                complianceLabel: 'Legal Compliance',
+                riskLevel: 'Risk Level',
+                riskLow: 'Low Risk',
+                riskMedium: 'Medium Risk',
+                riskHigh: 'High Risk',
+                riskCritical: 'Critical Risk',
+                payslipCompliant: 'Payslip is compliant',
+                payslipViolations: 'Violations found in payslip',
+
+                // Methodology
+                methodologyTitle: '📋 Analysis Methodology',
+                dataSource: 'Data Source:',
+                methodology: 'Methodology:',
+                totalChecks: 'Total Checks:',
+                checksOnPayslips: 'checks across {count} payslips',
+                defaultDataSource: 'Salary data was extracted from the payslip using OCR and analyzed automatically',
+                defaultMethodology: 'Analysis is based on Israeli labor laws, including the Minimum Wage Law and Pension Extension Order',
+                checkMinWage: 'Minimum Wage Check',
+                checkMinWageDesc: 'Verifies hourly rate meets legal minimum wage requirements',
+                checkHoursRate: 'Hours × Rate Calculation',
+                checkHoursRateDesc: 'Validates consistency between hours worked, rate, and base salary',
+                checkPension: 'Pension Contributions',
+                checkPensionDesc: 'Checks mandatory pension contributions (6% employee, 6.5% employer)',
+
+                // Payslip Details
+                payslipDetailsTitle: '📄 Payslip Details',
+                compliant: '✓ Compliant',
+                violation: '⚠️ Violations Found',
+                extractedData: '📊 Extracted Data',
+                grossSalary: 'Gross Salary',
+                netSalary: 'Net Salary',
+                hoursWorked: 'Hours Worked',
+                hourlyRate: 'Hourly Rate',
+                pensionEmployee: 'Employee Pension',
+                incomeTax: 'Income Tax',
+                legalRequirements: '⚖️ Legal Requirements',
+                minHourlyWage: 'Minimum Hourly Wage',
+                minMonthlyWage: 'Minimum Monthly Wage',
+                pensionRate: 'Employee Pension Rate',
+                expectedPension: 'Required Pension (Employee)',
+                checkResults: '🔍 Check Results',
+
+                // Violations
+                violationsTitle: '⚠️ Violations Found',
+                noViolations: 'Excellent! No violations found',
+                noViolationsDesc: 'All payslips comply with labor law requirements',
+                expected: 'Expected:',
+                actual: 'Actual:',
+                violationMinWage: 'Minimum Wage',
+                violationPension: 'Pension Contributions',
+                violationCalc: 'Calculation Error',
+                violationOvertime: 'Overtime',
+
+                // File Results
+                fileResultsTitle: '📁 File Processing Status',
+                analyzedSuccess: 'Analyzed successfully',
+                networkError: 'Network error',
+                notAPayslip: 'Document does not appear to be a payslip. No typical payslip fields found such as: gross/net salary, income tax, national insurance, or pension contributions.',
+                ocrError: 'Text recognition (OCR) error. Make sure Google Cloud Vision API is enabled, or try uploading a higher quality file.',
+
+                // Actions
+                downloadReport: '📥 Download Full PDF Report',
+                analyzeAnother: '📄 Analyze Another',
+                generatingPdf: '⏳ Generating PDF...',
+
+                // Payment Popup
+                paymentTitle: '🔓 Access Analysis Results',
+                paymentSubtitle: 'Complete payment to view full results',
+                docsCount: 'Number of payslips',
+                package: 'Package',
+                totalPayment: 'Total Payment',
+                creditCard: 'Credit Card',
+                paymentSecure: 'Payment is secure and encrypted. We do not store your payment details.',
+                processingPayment: 'Processing payment...',
+                paymentVia: 'via',
+                paymentSuccess: 'Payment Successful!',
+                paymentSuccessDesc: 'You can now view the full analysis results',
+                viewResults: '🔓 View Results',
+
+                // Features
+                featuresTitle: 'What We Check',
+                featuresSubtitle: '8 comprehensive checks based on Israeli labor laws',
+                featureMinWage: 'Minimum Wage',
+                featureMinWageDesc: 'Verify hourly rate meets minimum wage law requirements',
+                featureMinWageLegal: 'Minimum Wage Law, 5747-1987',
+                featureMinWageRate: 'NIS 34.32/hour (April 2025)',
+                featurePension: 'Pension Contributions',
+                featurePensionDesc: 'Mandatory contributions: Employee 6%, Employer 6.5%',
+                featurePensionLegal: 'Pension Insurance Expansion Order, 2008',
+                featurePensionRate: 'Total 12.5% (excl. severance)',
+                featureOvertime: 'Overtime Pay',
+                featureOvertimeDesc: 'First 2 hours 125%, 3rd hour onwards 150%',
+                featureOvertimeLegal: 'Working Hours & Rest Law, 5711-1951',
+                featureOvertimeRate: 'Maximum 4 overtime hours per day',
+                featureHoursRate: 'Hours × Rate',
+                featureHoursRateDesc: 'Verify base salary matches hours times hourly rate',
+                featureHoursRateLegal: 'Wage Protection Law, 5718-1958',
+                featureHoursRateRate: 'Tolerance: 1% or NIS 1',
+                featureNI: 'National Insurance',
+                featureNIDesc: 'Verify National Insurance deduction by income tier',
+                featureNILegal: 'National Insurance Law, 5755-1995',
+                featureNIRate: '0.4% up to NIS 7,522 | 7% above',
+                featureHealthTax: 'Health Tax',
+                featureHealthTaxDesc: 'Verify Health Tax deduction by income tier',
+                featureHealthTaxLegal: 'National Health Insurance Law, 5754-1994',
+                featureHealthTaxRate: '3.1% up to NIS 7,522 | 5% above',
+                featureSeverance: 'Severance Fund',
+                featureSeveranceDesc: 'Verify employer severance fund contribution (Section 14)',
+                featureSeveranceLegal: 'Severance Pay Law, 5723-1963',
+                featureSeveranceRate: '8.33% of salary (1/12 monthly)',
+                featurePrivacy: 'Complete Privacy',
+                featurePrivacyDesc: 'Your data is processed securely and not stored',
+                disclaimerTitle: '⚠️ Limitations & Disclaimers',
+                disclaimerText: 'System checks only if data appears on payslip. Does NOT check: Income Tax, Recuperation Pay, Annual Vacation, Sick Leave, Travel Expenses. Results do not constitute legal advice. For complete assessment, consult a labor law attorney.',
+
+                // Footer
+                footerDesc: 'Payslip analysis system for Israeli labor law compliance',
+            }
+        };
+
+        // Get translation
+        function t(key) {
+            return translations[currentLang][key] || key;
+        }
+
+        // Pricing tiers
+        function calculatePrice(docCount) {
+            if (docCount <= 12) {
+                return { price: 10, package: t('upTo12') };
+            } else if (docCount <= 24) {
+                return { price: 14.90, package: t('upTo24') };
+            } else {
+                return { price: 24.90, package: t('unlimited') };
+            }
+        }
+
+        // Click to upload
+        uploadBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            fileInput.click();
+        });
+
+        uploadCard.addEventListener('click', (e) => {
+            if (currentFiles.length === 0 && !e.target.closest('.selected-file-item') && !e.target.closest('.analyze-btn')) {
+                fileInput.click();
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFiles(Array.from(e.target.files));
+            }
+        });
+
+        // Drag and drop
+        uploadCard.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadCard.classList.add('dragover');
+        });
+
+        uploadCard.addEventListener('dragleave', () => {
+            uploadCard.classList.remove('dragover');
+        });
+
+        uploadCard.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadCard.classList.remove('dragover');
+            if (e.dataTransfer.files.length > 0) {
+                handleFiles(Array.from(e.dataTransfer.files));
+            }
+        });
+
+        function formatFileSize(bytes) {
+            if (bytes < 1024) return bytes + ' B';
+            if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + ' KB';
+            return (bytes / (1024 * 1024)).toFixed(1) + ' MB';
+        }
+
+        function handleFiles(files) {
+            const validTypes = ['application/pdf', 'image/png', 'image/jpeg', 'image/tiff'];
+
+            files.forEach(file => {
+                if (validTypes.includes(file.type) || file.name.match(/\.(pdf|png|jpg|jpeg|tiff|tif)$/i)) {
+                    // Avoid duplicates
+                    if (!currentFiles.some(f => f.name === file.name && f.size === file.size)) {
+                        currentFiles.push(file);
+                    }
+                }
+            });
+
+            if (currentFiles.length === 0) {
+                alert('סוג קובץ לא נתמך. אנא העלה קבצי PDF או תמונות.');
+                return;
+            }
+
+            updateFilesList();
+            uploadCard.classList.add('has-file');
+        }
+
+        function updateFilesList() {
+            if (currentFiles.length === 0) {
+                selectedFilesWrapper.classList.remove('show');
+                uploadCard.classList.remove('has-file');
+                return;
+            }
+
+            selectedFilesWrapper.classList.add('show');
+
+            // Update files list (scrollable)
+            selectedFiles.innerHTML = currentFiles.map((file, index) => `
+                <div class="selected-file-item">
+                    <div class="file-info">
+                        <span class="file-icon">${file.type.includes('pdf') ? '📄' : '🖼️'}</span>
+                        <span class="file-name">${file.name}</span>
+                        <span class="file-size">(${formatFileSize(file.size)})</span>
+                    </div>
+                    <button class="remove-file" onclick="removeFile(${index}, event)">×</button>
+                </div>
+            `).join('');
+
+            // Update files count (outside scroll area)
+            const fileWord = currentFiles.length === 1 ? t('fileSelected') : t('filesSelected');
+            filesCount.textContent = `📁 ${currentFiles.length} ${fileWord}`;
+        }
+
+        function removeFile(index, e) {
+            e.stopPropagation();
+            currentFiles.splice(index, 1);
+            updateFilesList();
+            if (currentFiles.length === 0) {
+                fileInput.value = '';
+                resultsSection.classList.remove('show');
+            }
+        }
+
+        function clearFiles() {
+            currentFiles = [];
+            fileInput.value = '';
+            updateFilesList();
+            resultsSection.classList.remove('show');
+        }
+
+        // Helper function to add delay between API calls
+        function delay(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function analyzeFiles() {
+            if (currentFiles.length === 0) return;
+
+            // Show loading
+            loading.classList.add('show');
+            resultsSection.classList.remove('show');
+            document.querySelector('.loading p').textContent = t('analyzingPayslips').replace('{count}', currentFiles.length);
+
+            const allResults = {
+                total_missing: 0,
+                total_payslips: 0,
+                compliant_payslips: 0,
+                non_compliant_payslips: 0,
+                violations: [],
+                violation_types: [],
+                problem_months: [],
+                file_results: []
+            };
+
+            // Rate limiting: delay between requests (ms) to avoid API quota issues
+            const DELAY_BETWEEN_FILES = 1000; // 1 second delay
+
+            try {
+                // Analyze each file with rate limiting
+                for (let i = 0; i < currentFiles.length; i++) {
+                    document.querySelector('.loading p').textContent = t('analyzingFiles').replace('{current}', i + 1).replace('{total}', currentFiles.length);
+
+                    // Add delay between files (except for the first one)
+                    if (i > 0) {
+                        await delay(DELAY_BETWEEN_FILES);
+                    }
+
+                    const formData = new FormData();
+                    formData.append('file', currentFiles[i]);
+
+                    try {
+                        const response = await fetch('/analyze/file', {
+                            method: 'POST',
+                            body: formData
+                        });
+
+                        // Always count the file as submitted
+                        allResults.total_payslips++;
+
+                        if (response.ok) {
+                            const result = await response.json();
+
+                            // Aggregate results
+                            allResults.total_missing += (result.total_missing || 0);
+
+                            if (result.total_missing > 0 || (result.violation_types && result.violation_types.length > 0)) {
+                                allResults.non_compliant_payslips++;
+                            } else {
+                                allResults.compliant_payslips++;
+                            }
+
+                            if (result.violations) {
+                                allResults.violations.push(...result.violations);
+                            }
+                            if (result.violation_types) {
+                                result.violation_types.forEach(vt => {
+                                    if (!allResults.violation_types.includes(vt)) {
+                                        allResults.violation_types.push(vt);
+                                    }
+                                });
+                            }
+                            if (result.problem_months) {
+                                allResults.problem_months.push(...result.problem_months);
+                            }
+
+                            allResults.file_results.push({
+                                file: currentFiles[i].name,
+                                success: true,
+                                ...result
+                            });
+                        } else {
+                            // API returned an error - still count the file but mark as failed
+                            const errorData = await response.json().catch(() => ({ detail: 'שגיאה בעיבוד הקובץ' }));
+                            allResults.file_results.push({
+                                file: currentFiles[i].name,
+                                success: false,
+                                error: errorData.detail || 'שגיאה בעיבוד הקובץ'
+                            });
+                        }
+                    } catch (err) {
+                        console.error(`Error analyzing ${currentFiles[i].name}:`, err);
+                        allResults.total_payslips++;
+                        allResults.file_results.push({
+                            file: currentFiles[i].name,
+                            success: false,
+                            error: 'שגיאת רשת'
+                        });
+                    }
+                }
+
+                // Calculate compliance rate
+                if (allResults.total_payslips > 0) {
+                    allResults.compliance_rate = (allResults.compliant_payslips / allResults.total_payslips) * 100;
+                } else {
+                    allResults.compliance_rate = 100;
+                }
+
+                // Determine risk level
+                if (allResults.compliance_rate >= 90) {
+                    allResults.risk_level = 'low';
+                } else if (allResults.compliance_rate >= 70) {
+                    allResults.risk_level = 'medium';
+                } else if (allResults.compliance_rate >= 50) {
+                    allResults.risk_level = 'high';
+                } else {
+                    allResults.risk_level = 'critical';
+                }
+
+                lastResults = allResults;
+                displayResults(allResults);
+            } catch (error) {
+                console.error('Error:', error);
+                displayDemoResults();
+            } finally {
+                loading.classList.remove('show');
+            }
+        }
+
+        function displayResults(data) {
+            resultsSection.classList.add('show');
+
+            // If not paid, blur results and show payment popup
+            if (!isPaid) {
+                resultsSection.classList.add('results-blur');
+                // Disable download button
+                const downloadBtn = document.querySelector('.action-btn.download');
+                if (downloadBtn) {
+                    downloadBtn.disabled = true;
+                }
+                // Show payment popup after a short delay
+                setTimeout(() => {
+                    showPaymentPopup(data.total_payslips || currentFiles.length);
+                }, 500);
+            } else {
+                resultsSection.classList.remove('results-blur');
+            }
+
+            // Summary cards
+            const summaryGrid = document.getElementById('summaryGrid');
+            const totalMissing = data.total_missing || 0;
+            const isCompliant = totalMissing === 0 && (!data.violation_types || data.violation_types.length === 0);
+            const complianceRate = data.compliance_rate || (isCompliant ? 100 : 0);
+            const riskLevel = data.risk_level || (isCompliant ? 'low' : 'high');
+            const totalChecks = data.analysis_info?.total_checks_performed || (data.total_payslips || 1) * 3;
+
+            summaryGrid.innerHTML = `
+                <div class="summary-card ${isCompliant ? 'compliant' : 'violation'}">
+                    <div class="icon">${isCompliant ? '✅' : '⚠️'}</div>
+                    <div class="value">${isCompliant ? t('statusCompliant') : t('statusViolations')}</div>
+                    <div class="label">${t('overallStatus')}</div>
+                </div>
+                <div class="summary-card ${totalMissing > 0 ? 'violation' : ''}">
+                    <div class="icon">💰</div>
+                    <div class="value">NIS ${totalMissing.toLocaleString('en-US', {minimumFractionDigits: 2})}</div>
+                    <div class="label">${t('missingAmount')}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="icon">🔍</div>
+                    <div class="value">${totalChecks}</div>
+                    <div class="label">${t('checksPerformed')}</div>
+                </div>
+                <div class="summary-card">
+                    <div class="icon">📋</div>
+                    <div class="value">${data.total_payslips || 1}</div>
+                    <div class="label">${t('payslipsChecked')}</div>
+                </div>
+            `;
+
+            // Compliance status
+            const complianceStatus = document.getElementById('complianceStatus');
+            const riskLabels = {
+                'low': { text: t('riskLow'), class: 'low' },
+                'medium': { text: t('riskMedium'), class: 'medium' },
+                'high': { text: t('riskHigh'), class: 'high' },
+                'critical': { text: t('riskCritical'), class: 'critical' }
+            };
+            const risk = riskLabels[riskLevel] || riskLabels.low;
+
+            complianceStatus.innerHTML = `
+                <div class="status-header">
+                    <div class="status-badge ${isCompliant ? 'compliant' : 'non-compliant'}">
+                        <span class="status-icon">${isCompliant ? '✅' : '❌'}</span>
+                        ${isCompliant ? t('payslipCompliant') : t('payslipViolations')}
+                    </div>
+                    <div class="risk-level">
+                        <div class="label">${t('riskLevel')}</div>
+                        <div class="value ${risk.class}">${risk.text}</div>
+                    </div>
+                </div>
+                <div class="compliance-bar">
+                    <div class="bar-label">
+                        <span>${t('complianceLabel')}</span>
+                        <span>${complianceRate.toFixed(0)}%</span>
+                    </div>
+                    <div class="bar-track">
+                        <div class="bar-fill" style="width: ${complianceRate}%"></div>
+                    </div>
+                </div>
+            `;
+
+            // Methodology Section
+            const methodologySection = document.getElementById('methodologySection');
+            const methodologyContent = document.getElementById('methodologyContent');
+            const checksGrid = document.getElementById('checksGrid');
+
+            if (data.analysis_info) {
+                const checksOnPayslips = t('checksOnPayslips').replace('{count}', data.total_payslips || 1);
+                methodologyContent.innerHTML = `
+                    <p><strong>${t('dataSource')}</strong> ${data.analysis_info.data_source}</p>
+                    <p><strong>${t('methodology')}</strong> ${data.analysis_info.methodology}</p>
+                    <p><strong>${t('totalChecks')}</strong> ${data.analysis_info.total_checks_performed} ${checksOnPayslips}</p>
+                `;
+            } else {
+                methodologyContent.innerHTML = `
+                    <p><strong>${t('dataSource')}</strong> ${t('defaultDataSource')}</p>
+                    <p><strong>${t('methodology')}</strong> ${t('defaultMethodology')}</p>
+                `;
+            }
+
+            if (data.checks_summary && data.checks_summary.checks_list) {
+                checksGrid.innerHTML = data.checks_summary.checks_list.map(check => `
+                    <div class="check-item">
+                        <h4>✓ ${currentLang === 'he' ? check.name_hebrew : check.name}</h4>
+                        <p>${check.description}</p>
+                    </div>
+                `).join('');
+            } else {
+                checksGrid.innerHTML = `
+                    <div class="check-item">
+                        <h4>✓ ${t('checkMinWage')}</h4>
+                        <p>${t('checkMinWageDesc')}</p>
+                    </div>
+                    <div class="check-item">
+                        <h4>✓ ${t('checkHoursRate')}</h4>
+                        <p>${t('checkHoursRateDesc')}</p>
+                    </div>
+                    <div class="check-item">
+                        <h4>✓ ${t('checkPension')}</h4>
+                        <p>${t('checkPensionDesc')}</p>
+                    </div>
+                `;
+            }
+
+            // Payslip Details Section
+            const payslipDetailsSection = document.getElementById('payslipDetailsSection');
+            const payslipDetailsList = document.getElementById('payslipDetailsList');
+
+            if (data.payslip_details && data.payslip_details.length > 0) {
+                payslipDetailsSection.style.display = 'block';
+                const locale = currentLang === 'he' ? 'he-IL' : 'en-US';
+                const currencySymbol = currentLang === 'he' ? '₪' : 'NIS ';
+                payslipDetailsList.innerHTML = data.payslip_details.map((detail, index) => `
+                    <div class="payslip-card" id="payslip-${index}">
+                        <div class="payslip-card-header" onclick="togglePayslipCard(${index})">
+                            <div class="payslip-card-title">
+                                📄 ${detail.month_name || detail.month}
+                                <span class="payslip-status-badge ${detail.validation_results.is_compliant ? 'compliant' : 'violation'}">
+                                    ${detail.validation_results.is_compliant ? t('compliant') : t('violation')}
+                                </span>
+                            </div>
+                            <span class="expand-icon">▼</span>
+                        </div>
+                        <div class="payslip-card-body" id="payslip-body-${index}">
+                            <div class="data-section">
+                                <div class="data-section-title">${t('extractedData')}</div>
+                                <div class="data-grid">
+                                    <div class="data-item">
+                                        <div class="label">${t('grossSalary')}</div>
+                                        <div class="value">${currencySymbol}${(detail.extracted_data.gross_salary || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('netSalary')}</div>
+                                        <div class="value">${currencySymbol}${(detail.extracted_data.net_salary || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('hoursWorked')}</div>
+                                        <div class="value">${(detail.extracted_data.hours_worked || 0).toFixed(1)}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('hourlyRate')}</div>
+                                        <div class="value">${currencySymbol}${(detail.extracted_data.hourly_rate || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('pensionEmployee')}</div>
+                                        <div class="value">${currencySymbol}${(detail.extracted_data.pension_employee || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('incomeTax')}</div>
+                                        <div class="value">${currencySymbol}${(detail.extracted_data.income_tax || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-section">
+                                <div class="data-section-title">${t('legalRequirements')} (${detail.month})</div>
+                                <div class="data-grid">
+                                    <div class="data-item">
+                                        <div class="label">${t('minHourlyWage')}</div>
+                                        <div class="value">${currencySymbol}${(detail.legal_requirements.minimum_hourly_wage || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('minMonthlyWage')}</div>
+                                        <div class="value">${currencySymbol}${(detail.legal_requirements.minimum_monthly_wage || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('pensionRate')}</div>
+                                        <div class="value">${detail.legal_requirements.pension_employee_rate}</div>
+                                    </div>
+                                    <div class="data-item">
+                                        <div class="label">${t('expectedPension')}</div>
+                                        <div class="value">${currencySymbol}${(detail.legal_requirements.expected_pension_employee || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-section">
+                                <div class="data-section-title">${t('checkResults')}</div>
+                                <div class="check-results">
+                                    ${detail.checks.map(check => `
+                                        <div class="check-result-item ${check.passed ? 'passed' : 'failed'}">
+                                            <div class="check-result-info">
+                                                <span class="check-result-icon">${check.passed ? '✅' : '❌'}</span>
+                                                <div>
+                                                    <div class="check-result-name">${currentLang === 'he' ? check.name_hebrew : check.name}</div>
+                                                    <div class="check-result-desc">${currentLang === 'he' ? (check.description_hebrew || check.description) : check.description}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                payslipDetailsSection.style.display = 'none';
+            }
+
+            // Violations
+            const violationsSection = document.getElementById('violationsSection');
+            const violationsList = document.getElementById('violationsList');
+            const violations = data.violation_types || [];
+            const vLocale = currentLang === 'he' ? 'he-IL' : 'en-US';
+            const vCurrency = currentLang === 'he' ? '₪' : 'NIS ';
+
+            if (violations.length === 0 && isCompliant) {
+                violationsSection.style.display = 'none';
+            } else {
+                violationsSection.style.display = 'block';
+
+                if (data.violations && data.violations.length > 0) {
+                    violationsList.innerHTML = data.violations.map(v => `
+                        <div class="violation-card">
+                            <div class="violation-header">
+                                <div class="violation-type">
+                                    ⚠️ ${currentLang === 'he' ? (v.type_hebrew || v.type || 'הפרה') : (v.type || 'Violation')}
+                                </div>
+                                <div class="violation-amount">${vCurrency}${(v.missing_amount || 0).toLocaleString(vLocale, {minimumFractionDigits: 2})}</div>
+                            </div>
+                            <div class="violation-description">${currentLang === 'he' ? (v.description_hebrew || v.description || '') : (v.description || '')}</div>
+                            <div class="violation-details">
+                                <span>${t('expected')} <strong>${vCurrency}${(v.expected_value || 0).toLocaleString(vLocale, {minimumFractionDigits: 2})}</strong></span>
+                                <span>${t('actual')} <strong>${vCurrency}${(v.actual_value || 0).toLocaleString(vLocale, {minimumFractionDigits: 2})}</strong></span>
+                            </div>
+                        </div>
+                    `).join('');
+                } else if (violations.length > 0) {
+                    violationsList.innerHTML = violations.map(type => `
+                        <div class="violation-card">
+                            <div class="violation-header">
+                                <div class="violation-type">⚠️ ${translateViolationType(type)}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    violationsList.innerHTML = `
+                        <div class="no-violations">
+                            <div class="icon">🎉</div>
+                            <h4>${t('noViolations')}</h4>
+                            <p>${t('noViolationsDesc')}</p>
+                        </div>
+                    `;
+                }
+            }
+
+            // File Results (show when multiple files)
+            const fileResultsSection = document.getElementById('fileResultsSection');
+            const fileResultsList = document.getElementById('fileResultsList');
+
+            // Show file results if multiple files OR if any file failed
+            const hasFailures = data.file_results && data.file_results.some(fr => !fr.success);
+            if (data.file_results && (data.file_results.length > 1 || hasFailures)) {
+                fileResultsSection.style.display = 'block';
+                fileResultsList.innerHTML = data.file_results.map(fr => `
+                    <div class="file-result-item">
+                        <div class="file-result-info">
+                            <span class="file-result-status">${fr.success ? '✅' : '❌'}</span>
+                            <span class="file-result-name">${fr.file}</span>
+                        </div>
+                        <span class="${fr.success ? 'file-result-success' : 'file-result-error'}">
+                            ${fr.success ? t('analyzedSuccess') : translateError(fr.error)}
+                        </span>
+                    </div>
+                `).join('');
+            } else {
+                fileResultsSection.style.display = 'none';
+            }
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function translateError(error) {
+            if (!error) return t('networkError');
+
+            // Check for known error codes
+            if (error.includes('NOT_A_PAYSLIP')) {
+                return t('notAPayslip');
+            }
+
+            // Check for OCR errors
+            if (error.includes('OCR extraction failed') || error.includes('OCR') || error.includes('Vision API')) {
+                return t('ocrError');
+            }
+
+            // Return original error if no translation found
+            return error;
+        }
+
+        function translateViolationType(type) {
+            const translationsHe = {
+                'minimum_wage': 'שכר מינימום',
+                'missing_pension': 'הפרשות פנסיה',
+                'calculation_error': 'שגיאת חישוב',
+                'overtime': 'שעות נוספות'
+            };
+            const translationsEn = {
+                'minimum_wage': 'Minimum Wage',
+                'missing_pension': 'Pension Contributions',
+                'calculation_error': 'Calculation Error',
+                'overtime': 'Overtime'
+            };
+            const dict = currentLang === 'he' ? translationsHe : translationsEn;
+            return dict[type] || type;
+        }
+
+        function togglePayslipCard(index) {
+            const card = document.getElementById(`payslip-${index}`);
+            const body = document.getElementById(`payslip-body-${index}`);
+
+            if (card && body) {
+                card.classList.toggle('expanded');
+                body.classList.toggle('show');
+            }
+        }
+
+        function displayDemoResults() {
+            // Demo data for when API isn't working
+            displayResults({
+                total_missing: 1021.75,
+                compliance_rate: 50,
+                risk_level: 'high',
+                total_payslips: 1,
+                violation_types: ['minimum_wage', 'missing_pension'],
+                violations: [
+                    {
+                        type: 'minimum_wage',
+                        type_hebrew: 'שכר מינימום',
+                        description: 'Hourly rate below minimum wage',
+                        description_hebrew: 'השכר השעתי נמוך משכר המינימום',
+                        expected_value: 5571.75,
+                        actual_value: 4550.00,
+                        missing_amount: 1021.75
+                    }
+                ]
+            });
+        }
+
+        function analyzeAnother() {
+            currentFiles = [];
+            fileInput.value = '';
+            selectedFilesWrapper.classList.remove('show');
+            selectedFiles.innerHTML = '';
+            uploadCard.classList.remove('has-file');
+            resultsSection.classList.remove('show');
+            resultsSection.classList.remove('results-blur');
+            isPaid = false; // Reset payment status for new analysis
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        async function downloadReport() {
+            if (!lastResults) {
+                alert('No analysis results available to download.');
+                return;
+            }
+
+            try {
+                // Show loading state on button
+                const downloadBtn = document.querySelector('.action-btn.download');
+                const originalText = downloadBtn.innerHTML;
+                downloadBtn.innerHTML = t('generatingPdf');
+                downloadBtn.disabled = true;
+
+                // Call the PDF generation endpoint
+                const response = await fetch('/report/pdf', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(lastResults),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate PDF');
+                }
+
+                // Get the PDF blob
+                const blob = await response.blob();
+
+                // Create download link
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `salary_compliance_report_${new Date().toISOString().split('T')[0]}.pdf`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                // Restore button state
+                downloadBtn.innerHTML = originalText;
+                downloadBtn.disabled = false;
+
+            } catch (error) {
+                console.error('Error generating PDF:', error);
+                alert('Failed to generate PDF report. Please try again.');
+
+                // Restore button state
+                const downloadBtn = document.querySelector('.action-btn.download');
+                downloadBtn.innerHTML = t('downloadReport');
+                downloadBtn.disabled = false;
+            }
+        }
+
+        function toggleLanguage() {
+            const html = document.documentElement;
+            const isHebrew = html.getAttribute('dir') === 'rtl';
+            html.setAttribute('dir', isHebrew ? 'ltr' : 'rtl');
+            html.setAttribute('lang', isHebrew ? 'en' : 'he');
+
+            // Update current language
+            currentLang = isHebrew ? 'en' : 'he';
+
+            // Update page title
+            document.title = t('pageTitle');
+
+            // Apply translations to all elements with data-i18n attribute
+            applyTranslations();
+
+            // Update files count if there are files selected
+            if (currentFiles.length > 0) {
+                updateFilesList();
+            }
+
+            // Re-render results if they're displayed
+            if (lastResults && resultsSection.classList.contains('show')) {
+                displayResults(lastResults);
+            }
+        }
+
+        // Apply translations to all elements with data-i18n attribute
+        function applyTranslations() {
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                const translation = t(key);
+                if (translation) {
+                    el.textContent = translation;
+                }
+            });
+
+            // Update "Most Popular" badge on pricing card
+            const popularCard = document.querySelector('.pricing-card.popular');
+            if (popularCard) {
+                popularCard.setAttribute('data-popular-label', t('mostPopular'));
+            }
+        }
+
+        // Payment functions
+        function showPaymentPopup(docCount) {
+            const pricing = calculatePrice(docCount);
+
+            document.getElementById('popupDocsCount').textContent = docCount;
+            document.getElementById('popupPackage').textContent = pricing.package;
+            document.getElementById('popupPrice').textContent = `${pricing.price} NIS`;
+
+            // Reset popup state
+            document.getElementById('paymentContent').style.display = 'block';
+            document.getElementById('paymentProcessing').classList.remove('show');
+            document.getElementById('paymentSuccess').classList.remove('show');
+
+            // Show overlay
+            document.getElementById('paymentOverlay').classList.add('show');
+        }
+
+        function closePaymentPopup() {
+            document.getElementById('paymentOverlay').classList.remove('show');
+        }
+
+        function processPayment(method) {
+            // Hide payment content, show processing
+            document.getElementById('paymentContent').style.display = 'none';
+            document.getElementById('paymentProcessing').classList.add('show');
+            document.getElementById('processingMethod').textContent = `${t('paymentVia')} ${method}`;
+
+            // Simulate payment processing (5 seconds)
+            setTimeout(() => {
+                // Hide processing, show success
+                document.getElementById('paymentProcessing').classList.remove('show');
+                document.getElementById('paymentSuccess').classList.add('show');
+            }, 5000);
+        }
+
+        function unlockResults() {
+            isPaid = true;
+
+            // Close popup
+            closePaymentPopup();
+
+            // Remove blur from results
+            resultsSection.classList.remove('results-blur');
+
+            // Enable download button
+            const downloadBtn = document.querySelector('.action-btn.download');
+            if (downloadBtn) {
+                downloadBtn.disabled = false;
+            }
+
+            // Scroll to results
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

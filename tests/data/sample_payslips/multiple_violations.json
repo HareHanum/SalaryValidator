@@ -1,0 +1,30 @@
+{
+  "payslip_date": "2024-01-01",
+  "employee_name": "משה אברהם",
+  "employee_id": "444555666",
+  "base_salary": 4200.00,
+  "hours_worked": 182,
+  "hourly_rate": 23.08,
+  "gross_salary": 4200.00,
+  "net_salary": 3900.00,
+  "overtime_hours": 0,
+  "overtime_pay": 0,
+  "weekend_hours": 0,
+  "weekend_pay": 0,
+  "vacation_days": 0,
+  "vacation_pay": 0,
+  "bonus": 0,
+  "deductions": {
+    "income_tax": 100.00,
+    "national_insurance": 100.00,
+    "health_insurance": 100.00,
+    "pension_employee": 0,
+    "pension_employer": 0
+  },
+  "expected_result": {
+    "is_compliant": false,
+    "violations": ["minimum_wage", "missing_pension"],
+    "total_missing_approx": 1623.75,
+    "description": "Below minimum wage AND missing pension contributions"
+  }
+}
