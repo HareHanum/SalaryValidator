@@ -319,12 +319,20 @@ class HealthTaxRates:
 
 
 HEALTH_TAX_HISTORY: list[HealthTaxRates] = [
-    # 2025 rates
+    # 2025 rates (updated Feb 2025)
+    HealthTaxRates(
+        effective_date=date(2025, 2, 1),
+        lower_threshold=Decimal("7522"),
+        upper_threshold=Decimal("50695"),
+        rate_lower=Decimal("0.0323"),  # 3.23%
+        rate_upper=Decimal("0.0517"),  # 5.17%
+    ),
+    # 2025 rates (Jan 2025)
     HealthTaxRates(
         effective_date=date(2025, 1, 1),
         lower_threshold=Decimal("7522"),
         upper_threshold=Decimal("50695"),
-        rate_lower=Decimal("0.031"),  # 3.1%
+        rate_lower=Decimal("0.0323"),  # 3.23%
         rate_upper=Decimal("0.05"),  # 5%
     ),
     # 2024 rates

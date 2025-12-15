@@ -31,6 +31,16 @@ class OutputFormat(str, Enum):
 class Settings(BaseSettings):
     """Application settings loaded from environment variables."""
 
+    # LLM Configuration
+    anthropic_api_key: Optional[str] = Field(
+        default=None,
+        description="Anthropic API key for LLM-based extraction",
+    )
+    llm_model: str = Field(
+        default="claude-sonnet-4-20250514",
+        description="Claude model to use for extraction",
+    )
+
     # OCR Configuration
     ocr_provider: OCRProvider = Field(
         default=OCRProvider.TESSERACT,

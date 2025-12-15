@@ -17,6 +17,7 @@ from src.models import Deductions, Payslip
 from src.reporter import OutputFormat
 from src.validator.labor_law_data import get_minimum_wage, get_pension_rates
 from src.reporter.pdf_reporter import generate_pdf_report
+from src.validator.rate_fetcher import get_rates_info, refresh_rates
 
 # Create FastAPI app
 app = FastAPI(
@@ -452,9 +453,15 @@ async def generate_pdf(data: dict):
     Generate a comprehensive PDF report from analysis data.
 
     Accepts JSON analysis data and returns a downloadable PDF report.
+    Supports language selection via 'report_language' field ('en' or 'he').
     """
     try:
-        pdf_bytes = generate_pdf_report(data)
+        # Extract language preference from data
+        language = data.pop('report_language', 'en')
+        if language not in ['en', 'he']:
+            language = 'en'
+
+        pdf_bytes = generate_pdf_report(data, language=language)
 
         return Response(
             content=pdf_bytes,
@@ -465,6 +472,33 @@ async def generate_pdf(data: dict):
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to generate PDF: {str(e)}")
+
+
+@app.get("/rates")
+async def get_current_rates():
+    """
+    Get current labor law rates (minimum wage, NI, health tax, pension).
+
+    Rates are fetched from official government sources (btl.gov.il) and cached for 24 hours.
+    """
+    try:
+        return get_rates_info()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to get rates: {str(e)}")
+
+
+@app.post("/rates/refresh")
+async def refresh_current_rates():
+    """
+    Force refresh rates from official government sources.
+
+    Use this to update rates immediately after known rate changes.
+    """
+    try:
+        refresh_rates()
+        return {"status": "success", "rates": get_rates_info()}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Failed to refresh rates: {str(e)}")
 
 
 # Run with: uvicorn src.api:app --reload

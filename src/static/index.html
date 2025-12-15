@@ -699,6 +699,60 @@
             font-size: 0.85rem;
         }
 
+        /* Extracted Summary Section */
+        .extracted-summary-section {
+            background: linear-gradient(135deg, var(--surface) 0%, #1a2537 100%);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 24px;
+            border: 1px solid var(--primary);
+            box-shadow: 0 4px 20px rgba(52, 152, 219, 0.1);
+        }
+
+        .extracted-summary-section h3 {
+            margin-bottom: 20px;
+            font-size: 1.2rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .extracted-summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+        }
+
+        .extracted-summary-item {
+            background: var(--surface-light);
+            padding: 16px;
+            border-radius: 12px;
+            text-align: center;
+            border: 1px solid var(--border);
+        }
+
+        .extracted-summary-item .label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .extracted-summary-item .value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .extracted-summary-item.highlight {
+            border-color: var(--success);
+            background: rgba(39, 174, 96, 0.1);
+        }
+
+        .extracted-summary-item.highlight .value {
+            color: var(--success);
+        }
+
         /* Methodology Section */
         .methodology-section {
             background: var(--surface);
@@ -907,6 +961,51 @@
         .check-result-desc {
             font-size: 0.85rem;
             color: var(--text-muted);
+        }
+
+        /* Payslip violations inside card */
+        .payslip-violations-section {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid var(--danger);
+            border-radius: 8px;
+            padding: 16px;
+            margin-top: 16px;
+        }
+
+        .payslip-violations-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .payslip-violation-item {
+            background: var(--surface);
+            padding: 12px;
+            border-radius: 8px;
+            border-right: 3px solid var(--danger);
+        }
+
+        .payslip-violation-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .payslip-violation-type {
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        .payslip-violation-amount {
+            font-weight: 700;
+            color: var(--danger);
+        }
+
+        .payslip-violation-desc {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
         }
 
         /* Expand icon */
@@ -1424,6 +1523,99 @@
             line-height: 1.6;
         }
 
+        /* Results disclaimer - more prominent */
+        .results-disclaimer {
+            background: linear-gradient(135deg, rgba(245, 158, 11, 0.15) 0%, rgba(239, 68, 68, 0.1) 100%);
+            border: 2px solid rgba(245, 158, 11, 0.5);
+            border-radius: 16px;
+            padding: 24px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .results-disclaimer h4 {
+            color: #f59e0b;
+            margin-bottom: 12px;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .results-disclaimer p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.7;
+            margin-bottom: 8px;
+        }
+
+        .results-disclaimer .disclaimer-strong {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .data-update-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(245, 158, 11, 0.3);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .data-update-info .update-date {
+            color: var(--primary);
+            font-weight: 600;
+        }
+
+        /* Feedback button */
+        .feedback-section {
+            background: var(--surface);
+            border-radius: 16px;
+            padding: 20px 24px;
+            margin: 24px 0;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .feedback-section .feedback-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .feedback-section .feedback-text strong {
+            color: var(--text);
+        }
+
+        .feedback-btn {
+            background: var(--surface-light);
+            color: var(--text);
+            border: 1px solid var(--border);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: inherit;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .feedback-btn:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+        }
+
         .privacy-card {
             max-width: 400px;
             margin: 0 auto;
@@ -1562,6 +1754,27 @@
                     <!-- Populated by JavaScript -->
                 </div>
 
+                <!-- Important Disclaimer -->
+                <div class="results-disclaimer" id="resultsDisclaimer">
+                    <h4>⚠️ <span data-i18n="resultsDisclaimerTitle">הערה חשובה</span></h4>
+                    <p data-i18n="resultsDisclaimerText1">תוצאות אלו מבוססות על ניתוח אוטומטי ומהוות <span class="disclaimer-strong">סינון ראשוני בלבד</span>. הכלי אינו מהווה תחליף לייעוץ משפטי מקצועי.</p>
+                    <p data-i18n="resultsDisclaimerText2">חישובי ביטוח לאומי ומס בריאות הם מורכבים ותלויים בגורמים רבים שאינם מופיעים בתלוש. סטיות קלות עשויות להיות תקינות.</p>
+                    <p data-i18n="resultsDisclaimerText3">לבירור מלא ומחייב יש לפנות לעורך דין המתמחה בדיני עבודה או לחשב שכר מוסמך.</p>
+                    <div class="data-update-info">
+                        <span>📅</span>
+                        <span data-i18n="dataLastUpdated">נתוני חקיקה עודכנו לאחרונה:</span>
+                        <span class="update-date" id="ratesLastUpdated">טוען...</span>
+                        <span style="margin-right: 10px; color: var(--text-muted);" id="ratesSource"></span>
+                    </div>
+                </div>
+
+                <div class="extracted-summary-section" id="extractedSummarySection" style="display: none;">
+                    <h3 data-i18n="extractedSummaryTitle">💼 נתונים שחולצו מהתלוש</h3>
+                    <div class="extracted-summary-grid" id="extractedSummaryGrid">
+                        <!-- Populated by JavaScript -->
+                    </div>
+                </div>
+
                 <div class="methodology-section" id="methodologySection">
                     <h3 data-i18n="methodologyTitle">📋 מתודולוגיית הבדיקה</h3>
                     <div class="methodology-content" id="methodologyContent">
@@ -1593,6 +1806,17 @@
                     </div>
                 </div>
 
+                <!-- Feedback Section -->
+                <div class="feedback-section" id="feedbackSection">
+                    <div class="feedback-text">
+                        <strong data-i18n="feedbackTitle">מצאת שגיאה בתוצאות?</strong>
+                        <span data-i18n="feedbackText">נשמח לשמוע ממך כדי לשפר את הדיוק של הכלי.</span>
+                    </div>
+                    <button class="feedback-btn" onclick="openFeedback()">
+                        📝 <span data-i18n="reportIssue">דווח על בעיה</span>
+                    </button>
+                </div>
+
                 <div class="actions" style="flex-direction: column; align-items: center;">
                     <button class="action-btn download" onclick="downloadReport()" data-i18n="downloadReport">
                         📥 הורד דוח PDF מלא
@@ -1614,14 +1838,14 @@
                         <h4 data-i18n="featureMinWage">שכר מינימום</h4>
                         <p data-i18n="featureMinWageDesc">וידוא שהשכר השעתי עומד בדרישות חוק שכר מינימום</p>
                         <div class="feature-legal" data-i18n="featureMinWageLegal">חוק שכר מינימום, התשמ"ז-1987</div>
-                        <div class="feature-rate" data-i18n="featureMinWageRate">₪34.32 לשעה (אפריל 2025)</div>
+                        <div class="feature-rate" id="rateMinWage">₪34.32 לשעה (אפריל 2025)</div>
                     </div>
                     <div class="feature-card">
                         <div class="icon">🏦</div>
                         <h4 data-i18n="featurePension">הפרשות פנסיה</h4>
                         <p data-i18n="featurePensionDesc">בדיקת הפרשות חובה: עובד 6%, מעסיק 6.5%</p>
                         <div class="feature-legal" data-i18n="featurePensionLegal">צו הרחבה לביטוח פנסיוני מקיף, 2008</div>
-                        <div class="feature-rate" data-i18n="featurePensionRate">סה"כ 12.5% (לא כולל פיצויים)</div>
+                        <div class="feature-rate" id="ratePension">סה"כ 12.5% (לא כולל פיצויים)</div>
                     </div>
                     <div class="feature-card">
                         <div class="icon">⏰</div>
@@ -1642,14 +1866,14 @@
                         <h4 data-i18n="featureNI">ביטוח לאומי</h4>
                         <p data-i18n="featureNIDesc">בדיקת ניכוי ביטוח לאומי לפי מדרגות השכר</p>
                         <div class="feature-legal" data-i18n="featureNILegal">חוק הביטוח הלאומי, התשנ"ה-1995</div>
-                        <div class="feature-rate" data-i18n="featureNIRate">0.4% עד ₪7,522 | 7% מעל</div>
+                        <div class="feature-rate" id="rateNI">0.4% עד ₪7,522 | 7% מעל</div>
                     </div>
                     <div class="feature-card">
                         <div class="icon">🏥</div>
                         <h4 data-i18n="featureHealthTax">מס בריאות</h4>
                         <p data-i18n="featureHealthTaxDesc">בדיקת ניכוי מס בריאות לפי מדרגות השכר</p>
                         <div class="feature-legal" data-i18n="featureHealthTaxLegal">חוק ביטוח בריאות ממלכתי, התשנ"ד-1994</div>
-                        <div class="feature-rate" data-i18n="featureHealthTaxRate">3.1% עד ₪7,522 | 5% מעל</div>
+                        <div class="feature-rate" id="rateHealthTax">3.23% עד ₪7,522 | 5.17% מעל</div>
                     </div>
                     <div class="feature-card">
                         <div class="icon">💼</div>
@@ -1687,23 +1911,27 @@
             <button class="close-popup" onclick="closePaymentPopup()">&times;</button>
 
             <div id="paymentContent">
-                <h2 data-i18n="paymentTitle">🔓 גישה לתוצאות הניתוח</h2>
-                <p class="popup-subtitle" data-i18n="paymentSubtitle">השלם את התשלום כדי לצפות בתוצאות המלאות</p>
+                <h2 data-i18n="paymentTitle">💳 תשלום לניתוח התלושים</h2>
+                <p class="popup-subtitle" data-i18n="paymentSubtitle">התשלום הוא חד פעמי עבור הניתוח הנוכחי. כל העלאה חדשה דורשת תשלום נפרד.</p>
 
                 <div class="payment-summary">
                     <div class="item">
-                        <span data-i18n="docsCount">כמות תלושים</span>
+                        <span data-i18n="docsCount">כמות תלושים להעלאה</span>
                         <span id="popupDocsCount">0</span>
                     </div>
                     <div class="item">
-                        <span data-i18n="package">חבילה</span>
+                        <span data-i18n="package">חבילה מתאימה</span>
                         <span id="popupPackage">-</span>
                     </div>
-                    <div class="item">
+                    <div class="item" style="font-weight: 700; color: var(--primary);">
                         <span data-i18n="totalPayment">סה"כ לתשלום</span>
                         <span id="popupPrice">0 NIS</span>
                     </div>
                 </div>
+
+                <p style="font-size: 0.75rem; color: var(--warning); margin-bottom: 16px; text-align: center;" data-i18n="paymentNote">
+                    * התשלום מתבצע לפי כמות הקבצים שהועלו, לא נשמרות יתרות
+                </p>
 
                 <div class="payment-methods" id="paymentMethods">
                     <button class="payment-btn paypal" onclick="processPayment('PayPal')">
@@ -1742,6 +1970,20 @@
         </div>
     </div>
 
+    <!-- PDF Language Selection Dialog - Currently English only due to RTL/font limitations -->
+    <div class="payment-overlay" id="pdfLanguageOverlay" style="display: none;">
+        <div class="payment-popup" style="max-width: 400px;">
+            <button class="close-popup" onclick="closePdfLanguageDialog()">&times;</button>
+            <h2 style="text-align: center; margin-bottom: 20px;">📄 Choose Report Language</h2>
+            <div style="display: flex; flex-direction: column; gap: 12px;">
+                <button class="payment-btn" onclick="generatePdfWithLanguage('en')" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                    <span class="btn-icon">🇬🇧</span>
+                    English
+                </button>
+            </div>
+        </div>
+    </div>
+
     <script>
         const uploadCard = document.getElementById('uploadCard');
         const fileInput = document.getElementById('fileInput');
@@ -1756,6 +1998,78 @@
         let lastResults = null;
         let isPaid = false;
         let currentLang = 'he';
+        let currentRates = null;
+
+        // Fetch and display current rates from API
+        async function fetchAndDisplayRates() {
+            try {
+                const response = await fetch('/rates');
+                if (!response.ok) throw new Error('Failed to fetch rates');
+                currentRates = await response.json();
+
+                // Update last updated date
+                const lastUpdatedEl = document.getElementById('ratesLastUpdated');
+                const sourceEl = document.getElementById('ratesSource');
+                if (lastUpdatedEl && currentRates.metadata) {
+                    lastUpdatedEl.textContent = currentRates.metadata.last_updated || 'Unknown';
+                }
+                if (sourceEl && currentRates.metadata) {
+                    sourceEl.textContent = currentRates.metadata.source.includes('btl.gov.il') ? '(מקור: btl.gov.il)' : '';
+                }
+
+                // Update feature cards with dynamic rates
+                updateFeatureRates();
+
+                console.log('Rates loaded:', currentRates);
+            } catch (error) {
+                console.error('Failed to fetch rates:', error);
+                // Keep showing default values on error
+                const lastUpdatedEl = document.getElementById('ratesLastUpdated');
+                if (lastUpdatedEl) {
+                    lastUpdatedEl.textContent = currentLang === 'he' ? 'לא זמין' : 'Unavailable';
+                }
+            }
+        }
+
+        // Update feature cards with current rates
+        function updateFeatureRates() {
+            if (!currentRates) return;
+
+            const minWageEl = document.getElementById('rateMinWage');
+            const pensionEl = document.getElementById('ratePension');
+            const niEl = document.getElementById('rateNI');
+            const healthEl = document.getElementById('rateHealthTax');
+
+            if (minWageEl && currentRates.minimum_wage) {
+                const hourly = currentRates.minimum_wage.hourly.toFixed(2);
+                minWageEl.textContent = currentLang === 'he'
+                    ? `₪${hourly} לשעה`
+                    : `NIS ${hourly}/hour`;
+            }
+
+            if (pensionEl && currentRates.pension) {
+                pensionEl.textContent = currentLang === 'he'
+                    ? `עובד ${currentRates.pension.employee_rate}, מעסיק ${currentRates.pension.employer_rate}`
+                    : `Employee ${currentRates.pension.employee_rate}, Employer ${currentRates.pension.employer_rate}`;
+            }
+
+            if (niEl && currentRates.national_insurance) {
+                const ni = currentRates.national_insurance;
+                niEl.textContent = currentLang === 'he'
+                    ? `${ni.employee_rate_lower} עד ₪${ni.lower_threshold.toLocaleString()} | ${ni.employee_rate_upper} מעל`
+                    : `${ni.employee_rate_lower} up to NIS ${ni.lower_threshold.toLocaleString()} | ${ni.employee_rate_upper} above`;
+            }
+
+            if (healthEl && currentRates.health_tax) {
+                const ht = currentRates.health_tax;
+                healthEl.textContent = currentLang === 'he'
+                    ? `${ht.rate_lower} עד ₪${ht.lower_threshold.toLocaleString()} | ${ht.rate_upper} מעל`
+                    : `${ht.rate_lower} up to NIS ${ht.lower_threshold.toLocaleString()} | ${ht.rate_upper} above`;
+            }
+        }
+
+        // Fetch rates on page load
+        fetchAndDisplayRates();
 
         // Translations
         const translations = {
@@ -1831,8 +2145,10 @@
                 compliant: '✓ תקין',
                 violation: '⚠️ נמצאו הפרות',
                 extractedData: '📊 נתונים שחולצו מהתלוש',
+                extractedSummaryTitle: '💼 נתונים שחולצו מהתלוש',
                 grossSalary: 'שכר ברוטו',
                 netSalary: 'שכר נטו',
+                baseSalary: 'שכר בסיס',
                 hoursWorked: 'שעות עבודה',
                 hourlyRate: 'שכר שעתי',
                 pensionEmployee: 'הפרשת פנסיה עובד',
@@ -1843,6 +2159,7 @@
                 pensionRate: 'שיעור פנסיה עובד',
                 expectedPension: 'פנסיה נדרשת (עובד)',
                 checkResults: '🔍 תוצאות בדיקה',
+                violationsInPayslip: 'הפרות בתלוש זה',
 
                 // Violations
                 violationsTitle: '⚠️ הפרות שנמצאו',
@@ -1868,18 +2185,19 @@
                 generatingPdf: '⏳ מייצר דוח PDF...',
 
                 // Payment Popup
-                paymentTitle: '🔓 גישה לתוצאות הניתוח',
-                paymentSubtitle: 'השלם את התשלום כדי לצפות בתוצאות המלאות',
-                docsCount: 'כמות תלושים',
-                package: 'חבילה',
+                paymentTitle: '💳 תשלום לניתוח התלושים',
+                paymentSubtitle: 'התשלום הוא חד פעמי עבור הניתוח הנוכחי. כל העלאה חדשה דורשת תשלום נפרד.',
+                paymentNote: '* התשלום מתבצע לפי כמות הקבצים שהועלו, לא נשמרות יתרות',
+                docsCount: 'כמות תלושים להעלאה',
+                package: 'חבילה מתאימה',
                 totalPayment: 'סה"כ לתשלום',
                 creditCard: 'כרטיס אשראי',
                 paymentSecure: 'התשלום מאובטח ומוצפן. אנחנו לא שומרים את פרטי התשלום שלך.',
                 processingPayment: 'מעבד תשלום...',
                 paymentVia: 'באמצעות',
                 paymentSuccess: 'התשלום בוצע בהצלחה!',
-                paymentSuccessDesc: 'כעת תוכל לצפות בתוצאות הניתוח המלאות',
-                viewResults: '🔓 צפה בתוצאות',
+                paymentSuccessDesc: 'מתחיל בניתוח התלושים...',
+                viewResults: '🔍 התחל ניתוח',
 
                 // Features
                 featuresTitle: 'מה אנחנו בודקים',
@@ -1916,6 +2234,18 @@
                 featurePrivacyDesc: 'הנתונים שלך מעובדים באופן מאובטח ואינם נשמרים',
                 disclaimerTitle: '⚠️ הגבלות וסייגים',
                 disclaimerText: 'המערכת בודקת רק אם הנתונים מופיעים בתלוש. היא אינה בודקת: מס הכנסה, דמי הבראה, חופשה שנתית, ימי מחלה, והוצאות נסיעה. התוצאות אינן מהוות ייעוץ משפטי. לבירור מלא יש לפנות לעו"ד דיני עבודה.',
+
+                // Results Disclaimer
+                resultsDisclaimerTitle: 'הערה חשובה',
+                resultsDisclaimerText1: 'תוצאות אלו מבוססות על ניתוח אוטומטי ומהוות <span class="disclaimer-strong">סינון ראשוני בלבד</span>. הכלי אינו מהווה תחליף לייעוץ משפטי מקצועי.',
+                resultsDisclaimerText2: 'חישובי ביטוח לאומי ומס בריאות הם מורכבים ותלויים בגורמים רבים שאינם מופיעים בתלוש. סטיות קלות עשויות להיות תקינות.',
+                resultsDisclaimerText3: 'לבירור מלא ומחייב יש לפנות לעורך דין המתמחה בדיני עבודה או לחשב שכר מוסמך.',
+                dataLastUpdated: 'נתוני חקיקה עודכנו לאחרונה:',
+
+                // Feedback
+                feedbackTitle: 'מצאת שגיאה בתוצאות?',
+                feedbackText: 'נשמח לשמוע ממך כדי לשפר את הדיוק של הכלי.',
+                reportIssue: 'דווח על בעיה',
 
                 // Footer
                 footerDesc: 'מערכת לניתוח תלושי שכר ובדיקת עמידה בחוקי העבודה בישראל',
@@ -1992,8 +2322,10 @@
                 compliant: '✓ Compliant',
                 violation: '⚠️ Violations Found',
                 extractedData: '📊 Extracted Data',
+                extractedSummaryTitle: '💼 Extracted Payslip Data',
                 grossSalary: 'Gross Salary',
                 netSalary: 'Net Salary',
+                baseSalary: 'Base Salary',
                 hoursWorked: 'Hours Worked',
                 hourlyRate: 'Hourly Rate',
                 pensionEmployee: 'Employee Pension',
@@ -2004,6 +2336,7 @@
                 pensionRate: 'Employee Pension Rate',
                 expectedPension: 'Required Pension (Employee)',
                 checkResults: '🔍 Check Results',
+                violationsInPayslip: 'Violations in this Payslip',
 
                 // Violations
                 violationsTitle: '⚠️ Violations Found',
@@ -2029,18 +2362,19 @@
                 generatingPdf: '⏳ Generating PDF...',
 
                 // Payment Popup
-                paymentTitle: '🔓 Access Analysis Results',
-                paymentSubtitle: 'Complete payment to view full results',
-                docsCount: 'Number of payslips',
-                package: 'Package',
+                paymentTitle: '💳 Payment for Payslip Analysis',
+                paymentSubtitle: 'This is a one-time payment for the current analysis. Each new upload requires a separate payment.',
+                paymentNote: '* Payment is based on the number of files uploaded, no credits are saved',
+                docsCount: 'Payslips to upload',
+                package: 'Matching package',
                 totalPayment: 'Total Payment',
                 creditCard: 'Credit Card',
                 paymentSecure: 'Payment is secure and encrypted. We do not store your payment details.',
                 processingPayment: 'Processing payment...',
                 paymentVia: 'via',
                 paymentSuccess: 'Payment Successful!',
-                paymentSuccessDesc: 'You can now view the full analysis results',
-                viewResults: '🔓 View Results',
+                paymentSuccessDesc: 'Starting payslip analysis...',
+                viewResults: '🔍 Start Analysis',
 
                 // Features
                 featuresTitle: 'What We Check',
@@ -2077,6 +2411,18 @@
                 featurePrivacyDesc: 'Your data is processed securely and not stored',
                 disclaimerTitle: '⚠️ Limitations & Disclaimers',
                 disclaimerText: 'System checks only if data appears on payslip. Does NOT check: Income Tax, Recuperation Pay, Annual Vacation, Sick Leave, Travel Expenses. Results do not constitute legal advice. For complete assessment, consult a labor law attorney.',
+
+                // Results Disclaimer
+                resultsDisclaimerTitle: 'Important Notice',
+                resultsDisclaimerText1: 'These results are based on automated analysis and represent <span class="disclaimer-strong">preliminary screening only</span>. This tool is not a substitute for professional legal advice.',
+                resultsDisclaimerText2: 'National Insurance and Health Tax calculations are complex and depend on many factors not shown on payslips. Minor discrepancies may be normal.',
+                resultsDisclaimerText3: 'For definitive assessment, please consult a labor law attorney or certified payroll accountant.',
+                dataLastUpdated: 'Legal data last updated:',
+
+                // Feedback
+                feedbackTitle: 'Found an error in the results?',
+                feedbackText: 'We\'d love to hear from you to improve tool accuracy.',
+                reportIssue: 'Report an Issue',
 
                 // Footer
                 footerDesc: 'Payslip analysis system for Israeli labor law compliance',
@@ -2214,6 +2560,18 @@
         async function analyzeFiles() {
             if (currentFiles.length === 0) return;
 
+            // Check if payment is required (not yet paid for this session)
+            if (!isPaid) {
+                // Show payment popup - analysis will start after payment
+                showPaymentPopup(currentFiles.length);
+                return;
+            }
+
+            // Payment confirmed - proceed with analysis
+            await runAnalysis();
+        }
+
+        async function runAnalysis() {
             // Show loading
             loading.classList.add('show');
             resultsSection.classList.remove('show');
@@ -2227,7 +2585,10 @@
                 violations: [],
                 violation_types: [],
                 problem_months: [],
-                file_results: []
+                file_results: [],
+                payslip_details: [],
+                analysis_info: null,
+                checks_summary: null
             };
 
             // Rate limiting: delay between requests (ms) to avoid API quota issues
@@ -2252,11 +2613,11 @@
                             body: formData
                         });
 
-                        // Always count the file as submitted
-                        allResults.total_payslips++;
-
                         if (response.ok) {
                             const result = await response.json();
+
+                            // Only count successful payslips
+                            allResults.total_payslips++;
 
                             // Aggregate results
                             allResults.total_missing += (result.total_missing || 0);
@@ -2281,6 +2642,19 @@
                                 allResults.problem_months.push(...result.problem_months);
                             }
 
+                            // Aggregate payslip_details for display
+                            if (result.payslip_details && result.payslip_details.length > 0) {
+                                allResults.payslip_details.push(...result.payslip_details);
+                            }
+
+                            // Keep first analysis_info and checks_summary
+                            if (!allResults.analysis_info && result.analysis_info) {
+                                allResults.analysis_info = result.analysis_info;
+                            }
+                            if (!allResults.checks_summary && result.checks_summary) {
+                                allResults.checks_summary = result.checks_summary;
+                            }
+
                             allResults.file_results.push({
                                 file: currentFiles[i].name,
                                 success: true,
@@ -2297,7 +2671,7 @@
                         }
                     } catch (err) {
                         console.error(`Error analyzing ${currentFiles[i].name}:`, err);
-                        allResults.total_payslips++;
+                        // Don't count failed files as payslips
                         allResults.file_results.push({
                             file: currentFiles[i].name,
                             success: false,
@@ -2324,6 +2698,11 @@
                     allResults.risk_level = 'critical';
                 }
 
+                // Update total checks count in analysis_info
+                if (allResults.analysis_info && allResults.payslip_details.length > 0) {
+                    allResults.analysis_info.total_checks_performed = allResults.payslip_details.length * 3;
+                }
+
                 lastResults = allResults;
                 displayResults(allResults);
             } catch (error) {
@@ -2336,22 +2715,8 @@
 
         function displayResults(data) {
             resultsSection.classList.add('show');
-
-            // If not paid, blur results and show payment popup
-            if (!isPaid) {
-                resultsSection.classList.add('results-blur');
-                // Disable download button
-                const downloadBtn = document.querySelector('.action-btn.download');
-                if (downloadBtn) {
-                    downloadBtn.disabled = true;
-                }
-                // Show payment popup after a short delay
-                setTimeout(() => {
-                    showPaymentPopup(data.total_payslips || currentFiles.length);
-                }, 500);
-            } else {
-                resultsSection.classList.remove('results-blur');
-            }
+            // Results are only shown after payment, so no blur needed
+            resultsSection.classList.remove('results-blur');
 
             // Summary cards
             const summaryGrid = document.getElementById('summaryGrid');
@@ -2416,6 +2781,46 @@
                 </div>
             `;
 
+            // Extracted Summary Section - Show key data at a glance
+            const extractedSummarySection = document.getElementById('extractedSummarySection');
+            const extractedSummaryGrid = document.getElementById('extractedSummaryGrid');
+
+            if (data.payslip_details && data.payslip_details.length > 0) {
+                extractedSummarySection.style.display = 'block';
+                const detail = data.payslip_details[0];  // First payslip
+                const sumLocale = currentLang === 'he' ? 'he-IL' : 'en-US';
+                const sumCurrency = currentLang === 'he' ? '₪' : 'NIS ';
+
+                extractedSummaryGrid.innerHTML = `
+                    <div class="extracted-summary-item highlight">
+                        <div class="label">${t('grossSalary')}</div>
+                        <div class="value">${sumCurrency}${(detail.extracted_data.gross_salary || 0).toLocaleString(sumLocale)}</div>
+                    </div>
+                    <div class="extracted-summary-item highlight">
+                        <div class="label">${t('netSalary')}</div>
+                        <div class="value">${sumCurrency}${(detail.extracted_data.net_salary || 0).toLocaleString(sumLocale)}</div>
+                    </div>
+                    <div class="extracted-summary-item">
+                        <div class="label">${t('baseSalary')}</div>
+                        <div class="value">${sumCurrency}${(detail.extracted_data.base_salary || 0).toLocaleString(sumLocale)}</div>
+                    </div>
+                    <div class="extracted-summary-item">
+                        <div class="label">${t('hoursWorked')}</div>
+                        <div class="value">${(detail.extracted_data.hours_worked || 0).toFixed(1)}</div>
+                    </div>
+                    <div class="extracted-summary-item">
+                        <div class="label">${t('hourlyRate')}</div>
+                        <div class="value">${sumCurrency}${(detail.extracted_data.hourly_rate || 0).toFixed(2)}</div>
+                    </div>
+                    <div class="extracted-summary-item">
+                        <div class="label">${t('pensionEmployee')}</div>
+                        <div class="value">${sumCurrency}${(detail.extracted_data.pension_employee || 0).toLocaleString(sumLocale)}</div>
+                    </div>
+                `;
+            } else {
+                extractedSummarySection.style.display = 'none';
+            }
+
             // Methodology Section
             const methodologySection = document.getElementById('methodologySection');
             const methodologyContent = document.getElementById('methodologyContent');
@@ -2468,7 +2873,7 @@
                 const locale = currentLang === 'he' ? 'he-IL' : 'en-US';
                 const currencySymbol = currentLang === 'he' ? '₪' : 'NIS ';
                 payslipDetailsList.innerHTML = data.payslip_details.map((detail, index) => `
-                    <div class="payslip-card" id="payslip-${index}">
+                    <div class="payslip-card ${index === 0 ? 'expanded' : ''}" id="payslip-${index}">
                         <div class="payslip-card-header" onclick="togglePayslipCard(${index})">
                             <div class="payslip-card-title">
                                 📄 ${detail.month_name || detail.month}
@@ -2478,7 +2883,7 @@
                             </div>
                             <span class="expand-icon">▼</span>
                         </div>
-                        <div class="payslip-card-body" id="payslip-body-${index}">
+                        <div class="payslip-card-body ${index === 0 ? 'show' : ''}" id="payslip-body-${index}">
                             <div class="data-section">
                                 <div class="data-section-title">${t('extractedData')}</div>
                                 <div class="data-grid">
@@ -2547,6 +2952,22 @@
                                     `).join('')}
                                 </div>
                             </div>
+                            ${detail.violations && detail.violations.length > 0 ? `
+                            <div class="data-section payslip-violations-section">
+                                <div class="data-section-title" style="color: var(--danger);">⚠️ ${t('violationsInPayslip')}</div>
+                                <div class="payslip-violations-list">
+                                    ${detail.violations.map(v => `
+                                        <div class="payslip-violation-item">
+                                            <div class="payslip-violation-header">
+                                                <span class="payslip-violation-type">${currentLang === 'he' ? (v.type_hebrew || v.type) : v.type}</span>
+                                                <span class="payslip-violation-amount">${currencySymbol}${Math.abs(v.missing || 0).toLocaleString(locale, {minimumFractionDigits: 2})}</span>
+                                            </div>
+                                            <div class="payslip-violation-desc">${currentLang === 'he' ? (v.description_hebrew || v.description) : v.description}</div>
+                                        </div>
+                                    `).join('')}
+                                </div>
+                            </div>
+                            ` : ''}
                         </div>
                     </div>
                 `).join('');
@@ -2557,33 +2978,48 @@
             // Violations
             const violationsSection = document.getElementById('violationsSection');
             const violationsList = document.getElementById('violationsList');
-            const violations = data.violation_types || [];
+            const violation_types = data.violation_types || [];
             const vLocale = currentLang === 'he' ? 'he-IL' : 'en-US';
             const vCurrency = currentLang === 'he' ? '₪' : 'NIS ';
 
-            if (violations.length === 0 && isCompliant) {
+            // Collect all violations from payslip_details if not in top-level violations
+            let allViolations = data.violations || [];
+            if (allViolations.length === 0 && data.payslip_details) {
+                data.payslip_details.forEach(detail => {
+                    if (detail.violations) {
+                        allViolations = allViolations.concat(detail.violations);
+                    }
+                });
+            }
+
+            if (violation_types.length === 0 && isCompliant && allViolations.length === 0) {
                 violationsSection.style.display = 'none';
             } else {
                 violationsSection.style.display = 'block';
 
-                if (data.violations && data.violations.length > 0) {
-                    violationsList.innerHTML = data.violations.map(v => `
+                if (allViolations.length > 0) {
+                    violationsList.innerHTML = allViolations.map(v => {
+                        // Handle both field naming conventions (API uses expected/actual/missing, some use expected_value/actual_value/missing_amount)
+                        const expectedVal = v.expected_value || v.expected || 0;
+                        const actualVal = v.actual_value || v.actual || 0;
+                        const missingVal = v.missing_amount || v.missing || 0;
+                        return `
                         <div class="violation-card">
                             <div class="violation-header">
                                 <div class="violation-type">
                                     ⚠️ ${currentLang === 'he' ? (v.type_hebrew || v.type || 'הפרה') : (v.type || 'Violation')}
                                 </div>
-                                <div class="violation-amount">${vCurrency}${(v.missing_amount || 0).toLocaleString(vLocale, {minimumFractionDigits: 2})}</div>
+                                <div class="violation-amount">${vCurrency}${Math.abs(missingVal).toLocaleString(vLocale, {minimumFractionDigits: 2})}</div>
                             </div>
                             <div class="violation-description">${currentLang === 'he' ? (v.description_hebrew || v.description || '') : (v.description || '')}</div>
                             <div class="violation-details">
-                                <span>${t('expected')} <strong>${vCurrency}${(v.expected_value || 0).toLocaleString(vLocale, {minimumFractionDigits: 2})}</strong></span>
-                                <span>${t('actual')} <strong>${vCurrency}${(v.actual_value || 0).toLocaleString(vLocale, {minimumFractionDigits: 2})}</strong></span>
+                                <span>${t('expected')} <strong>${vCurrency}${expectedVal.toLocaleString(vLocale, {minimumFractionDigits: 2})}</strong></span>
+                                <span>${t('actual')} <strong>${vCurrency}${actualVal.toLocaleString(vLocale, {minimumFractionDigits: 2})}</strong></span>
                             </div>
                         </div>
-                    `).join('');
-                } else if (violations.length > 0) {
-                    violationsList.innerHTML = violations.map(type => `
+                    `}).join('');
+                } else if (violation_types.length > 0) {
+                    violationsList.innerHTML = violation_types.map(type => `
                         <div class="violation-card">
                             <div class="violation-header">
                                 <div class="violation-type">⚠️ ${translateViolationType(type)}</div>
@@ -2706,11 +3142,25 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        async function downloadReport() {
+        function downloadReport() {
             if (!lastResults) {
                 alert('No analysis results available to download.');
                 return;
             }
+            // Generate English PDF directly (Hebrew not supported due to RTL/font limitations)
+            generatePdfWithLanguage('en');
+        }
+
+        function showPdfLanguageDialog() {
+            document.getElementById('pdfLanguageOverlay').classList.add('show');
+        }
+
+        function closePdfLanguageDialog() {
+            document.getElementById('pdfLanguageOverlay').classList.remove('show');
+        }
+
+        async function generatePdfWithLanguage(lang) {
+            closePdfLanguageDialog();
 
             try {
                 // Show loading state on button
@@ -2719,13 +3169,16 @@
                 downloadBtn.innerHTML = t('generatingPdf');
                 downloadBtn.disabled = true;
 
+                // Add language to the request
+                const requestData = { ...lastResults, report_language: lang };
+
                 // Call the PDF generation endpoint
                 const response = await fetch('/report/pdf', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(lastResults),
+                    body: JSON.stringify(requestData),
                 });
 
                 if (!response.ok) {
@@ -2774,6 +3227,9 @@
 
             // Apply translations to all elements with data-i18n attribute
             applyTranslations();
+
+            // Update dynamic rates display for new language
+            updateFeatureRates();
 
             // Update files count if there are files selected
             if (currentFiles.length > 0) {
@@ -2844,17 +3300,23 @@
             // Close popup
             closePaymentPopup();
 
-            // Remove blur from results
-            resultsSection.classList.remove('results-blur');
+            // Now run the actual analysis
+            runAnalysis();
+        }
 
-            // Enable download button
-            const downloadBtn = document.querySelector('.action-btn.download');
-            if (downloadBtn) {
-                downloadBtn.disabled = false;
-            }
-
-            // Scroll to results
-            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        // Feedback function - opens email with pre-filled details
+        function openFeedback() {
+            const subject = encodeURIComponent('SalaryValidator - Issue Report');
+            const body = encodeURIComponent(
+                'Please describe the issue you found:\n\n' +
+                '---\n' +
+                'Analysis details (optional - helps us investigate):\n' +
+                `Date: ${new Date().toLocaleDateString()}\n` +
+                `Total payslips analyzed: ${lastResults?.total_payslips || 'N/A'}\n` +
+                `Compliance rate: ${lastResults?.compliance_rate || 'N/A'}%\n` +
+                `Violations found: ${lastResults?.violation_types?.join(', ') || 'None'}\n`
+            );
+            window.open(`mailto:support@salaryvalidator.com?subject=${subject}&body=${body}`, '_blank');
         }
     </script>
 </body>

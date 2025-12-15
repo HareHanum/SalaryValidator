@@ -51,6 +51,7 @@ FIELD_LABELS = {
     "שכר בסיס": "base_salary",
     "שכר יסוד": "base_salary",
     "משכורת בסיס": "base_salary",
+    "משכורת": "base_salary",  # Michpal format
     "שכר חודשי": "base_salary",
     "שעות עבודה": "hours_worked",
     "שעות רגילות": "hours_worked",
@@ -58,6 +59,7 @@ FIELD_LABELS = {
     "שכר שעתי": "hourly_rate",
     "תעריף שעתי": "hourly_rate",
     "שעות נוספות": "overtime_hours",
+    "ש\"נ גלובלי": "overtime_pay",  # Michpal format - global overtime
     "תוספת שעות נוספות": "overtime_pay",
     "גמול שעות נוספות": "overtime_pay",
     "שעות שבת": "weekend_hours",
@@ -73,18 +75,23 @@ FIELD_LABELS = {
     # Deductions
     "מס הכנסה": "income_tax",
     "ביטוח לאומי": "national_insurance",
+    "ב. לאומי": "national_insurance",  # Michpal abbreviated format
+    "בט. לאומי": "national_insurance",  # Michpal abbreviated format
     "דמי בריאות": "health_insurance",
     "ביטוח בריאות": "health_insurance",
+    "מס בריאות": "health_insurance",  # Michpal format
     "פנסיה עובד": "pension_employee",
     "הפרשת עובד לפנסיה": "pension_employee",
     "פנסיה מעביד": "pension_employer",
     "הפרשת מעביד לפנסיה": "pension_employer",
     "קרן השתלמות": "provident_fund",
+    "קרה\"ש": "provident_fund",  # Michpal abbreviated format
 
     # Totals
     "שכר ברוטו": "gross_salary",
     "סה\"כ ברוטו": "gross_salary",
     "סך הכל ברוטו": "gross_salary",
+    "סה\"כ תשלומים": "gross_salary",  # Michpal format
     "שכר נטו": "net_salary",
     "סה\"כ נטו": "net_salary",
     "סך הכל נטו": "net_salary",

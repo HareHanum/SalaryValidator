@@ -11,7 +11,13 @@
       "Bash(rm:*)",
       "Bash(./venv/bin/pip:*)",
       "Bash(./venv/bin/salary-validator analyze:*)",
-      "Bash(./venv/bin/uvicorn:*)"
+      "Bash(./venv/bin/uvicorn:*)",
+      "Bash(tesseract:*)",
+      "Bash(ls:*)",
+      "Bash(./venv/bin/python3:*)",
+      "Bash(pkill:*)",
+      "WebSearch",
+      "WebFetch(domain:www.btl.gov.il)"
     ],
     "deny": [],
     "ask": []

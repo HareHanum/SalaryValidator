@@ -24,10 +24,14 @@ class NationalInsuranceRule(ValidationRule):
     Israeli law requires mandatory National Insurance contributions:
     - 0.4% on income up to 60% of average wage
     - 7% on income above that threshold (up to maximum insurable income)
+
+    NOTE: This check only flags SIGNIFICANT underpayments. NI calculations are complex
+    and depend on many factors not on payslips (e.g., exemptions, other income sources).
+    Minor discrepancies are expected and overpayments are not flagged as violations.
     """
 
-    # Tolerance for rounding differences
-    TOLERANCE_PERCENT = Decimal("0.02")  # 2% tolerance due to complex calculations
+    # Higher tolerance for complex calculations - only flag significant underpayments
+    TOLERANCE_PERCENT = Decimal("0.10")  # 10% tolerance - only flag major discrepancies
 
     @property
     def name(self) -> str:
@@ -78,18 +82,18 @@ class NationalInsuranceRule(ValidationRule):
         upper_bound = expected_ni * (1 + self.TOLERANCE_PERCENT)
 
         if actual_ni < lower_bound:
-            # Underpaid
+            # Significant underpayment - flag for review
             missing_amount = expected_ni - actual_ni
 
             hebrew_desc = (
-                f"ניכוי ביטוח לאומי ({actual_ni:.2f} ש\"ח) נמוך מהצפוי ({expected_ni:.2f} ש\"ח). "
-                f"השיעור: 0.4% עד ₪{rates.lower_threshold:,.0f}, 7% מעל זה. "
-                f"הפרש: {missing_amount:.2f} ש\"ח."
+                f"ניכוי ביטוח לאומי ({actual_ni:.2f} ש\"ח) נמוך משמעותית מהצפוי ({expected_ni:.2f} ש\"ח). "
+                f"הפרש: {missing_amount:.2f} ש\"ח. "
+                f"הערה: חישוב זה משוער - מומלץ לאמת מול חשב שכר."
             )
             english_desc = (
-                f"National Insurance deduction ({actual_ni:.2f} ILS) below expected ({expected_ni:.2f} ILS). "
-                f"Rate: 0.4% up to {rates.lower_threshold:,.0f} ILS, 7% above. "
-                f"Difference: {missing_amount:.2f} ILS."
+                f"National Insurance deduction ({actual_ni:.2f} ILS) significantly below expected ({expected_ni:.2f} ILS). "
+                f"Difference: {missing_amount:.2f} ILS. "
+                f"Note: This is an estimate - verify with payroll accountant."
             )
 
             return Violation(
@@ -102,28 +106,8 @@ class NationalInsuranceRule(ValidationRule):
                 legal_reference=self.legal_reference,
             )
 
-        if actual_ni > upper_bound:
-            # Overpaid - also report as it may indicate error
-            overpaid = actual_ni - expected_ni
-
-            hebrew_desc = (
-                f"ניכוי ביטוח לאומי ({actual_ni:.2f} ש\"ח) גבוה מהצפוי ({expected_ni:.2f} ש\"ח). "
-                f"נוכה ביתר {overpaid:.2f} ש\"ח - יש לבדוק את החישוב."
-            )
-            english_desc = (
-                f"National Insurance deduction ({actual_ni:.2f} ILS) higher than expected ({expected_ni:.2f} ILS). "
-                f"Overpaid by {overpaid:.2f} ILS - check calculation."
-            )
-
-            return Violation(
-                violation_type=self.violation_type,
-                description=english_desc,
-                description_hebrew=hebrew_desc,
-                expected_value=expected_ni,
-                actual_value=actual_ni,
-                missing_amount=-overpaid,  # Negative for overpayment
-                legal_reference=self.legal_reference,
-            )
+        # Note: Overpayments are NOT flagged as violations - they're usually due to
+        # factors not visible on the payslip (additional income, special circumstances)
 
         logger.debug(f"NI check passed: {actual_ni:.2f} within tolerance of {expected_ni:.2f}")
         return None
@@ -140,9 +124,12 @@ class HealthTaxRule(ValidationRule):
     Israeli law requires Health Tax (מס בריאות) contributions:
     - 3.1% on income up to 60% of average wage
     - 5% on income above that threshold
+
+    NOTE: This check only flags SIGNIFICANT underpayments. Health Tax calculations
+    can vary due to factors not shown on payslips. Overpayments are not flagged.
     """
 
-    TOLERANCE_PERCENT = Decimal("0.02")  # 2% tolerance
+    TOLERANCE_PERCENT = Decimal("0.10")  # 10% tolerance - only flag major discrepancies
 
     @property
     def name(self) -> str:
@@ -185,17 +172,18 @@ class HealthTaxRule(ValidationRule):
         upper_bound = expected_ht * (1 + self.TOLERANCE_PERCENT)
 
         if actual_ht < lower_bound:
+            # Significant underpayment - flag for review
             missing_amount = expected_ht - actual_ht
 
             hebrew_desc = (
-                f"ניכוי מס בריאות ({actual_ht:.2f} ש\"ח) נמוך מהצפוי ({expected_ht:.2f} ש\"ח). "
-                f"השיעור: 3.1% עד ₪{rates.lower_threshold:,.0f}, 5% מעל זה. "
-                f"הפרש: {missing_amount:.2f} ש\"ח."
+                f"ניכוי מס בריאות ({actual_ht:.2f} ש\"ח) נמוך משמעותית מהצפוי ({expected_ht:.2f} ש\"ח). "
+                f"הפרש: {missing_amount:.2f} ש\"ח. "
+                f"הערה: חישוב זה משוער - מומלץ לאמת מול חשב שכר."
             )
             english_desc = (
-                f"Health Tax deduction ({actual_ht:.2f} ILS) below expected ({expected_ht:.2f} ILS). "
-                f"Rate: 3.1% up to {rates.lower_threshold:,.0f} ILS, 5% above. "
-                f"Difference: {missing_amount:.2f} ILS."
+                f"Health Tax deduction ({actual_ht:.2f} ILS) significantly below expected ({expected_ht:.2f} ILS). "
+                f"Difference: {missing_amount:.2f} ILS. "
+                f"Note: This is an estimate - verify with payroll accountant."
             )
 
             return Violation(
@@ -208,27 +196,8 @@ class HealthTaxRule(ValidationRule):
                 legal_reference=self.legal_reference,
             )
 
-        if actual_ht > upper_bound:
-            overpaid = actual_ht - expected_ht
-
-            hebrew_desc = (
-                f"ניכוי מס בריאות ({actual_ht:.2f} ש\"ח) גבוה מהצפוי ({expected_ht:.2f} ש\"ח). "
-                f"נוכה ביתר {overpaid:.2f} ש\"ח."
-            )
-            english_desc = (
-                f"Health Tax deduction ({actual_ht:.2f} ILS) higher than expected ({expected_ht:.2f} ILS). "
-                f"Overpaid by {overpaid:.2f} ILS."
-            )
-
-            return Violation(
-                violation_type=self.violation_type,
-                description=english_desc,
-                description_hebrew=hebrew_desc,
-                expected_value=expected_ht,
-                actual_value=actual_ht,
-                missing_amount=-overpaid,
-                legal_reference=self.legal_reference,
-            )
+        # Note: Overpayments are NOT flagged as violations - they may be due to
+        # factors not visible on the payslip
 
         logger.debug(f"Health Tax check passed: {actual_ht:.2f} within tolerance of {expected_ht:.2f}")
         return None
